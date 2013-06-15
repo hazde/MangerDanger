@@ -27,4 +27,8 @@
 		<delete dir="${build}" />
 	</target>
 
+ 	<target name="run" depends="clean,compile,jar">
+        <java jar="${build}/MangerDanger.jar" fork="true" />
+    </target>
+
 </project>
