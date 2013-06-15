@@ -59,7 +59,7 @@ public class Level1State extends Level {
 			s[i] = new Slugger(tilemap);
 
 			//			s[i].setPosition(50 + (i * 20) , 100);
-			s[i].setPosition(tilemap.getSpawnPointX() + (new Random().nextInt(500) + 150) , 100);
+			s[i].setPosition(tilemap.getSpawnPointX() + (new Random().nextInt(2000) + 150) , 100);
 			enemies.add(s[i]);
 		}
 	}

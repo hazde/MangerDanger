@@ -26,6 +26,8 @@ public class Pee extends MapObject {
 		cWidth = 2;
 		cHeight = 2;
 		
+		
+//		dx = moveSpeed;
 		if (right) dx = moveSpeed;
 		else dx = -moveSpeed;
 		dy = moveSpeedY;
@@ -55,7 +57,7 @@ public class Pee extends MapObject {
 	public void draw(Graphics2D g) {
 		setMapPosition();
 
-		g.setColor(new Color(255, 224, 102));
+		g.setColor(new Color(0xFFEC1E));
 		g.fillRect((int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2), cWidth, cHeight);
 		
 //		Rectangle temp = this.getRectangle();

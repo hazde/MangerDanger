@@ -48,10 +48,11 @@ public class MenuState extends GameState {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		init();
 	}
 
 	public void init() {
-
+		Sound.music4.play(true);
 	}
 
 	public void update() {
@@ -143,6 +144,8 @@ public class MenuState extends GameState {
 		switch (currentChoice) {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
+			Sound.music4.stop();
+			Sound.music3.play(true);
 			break;
 		case OPTIONS:
 			break;

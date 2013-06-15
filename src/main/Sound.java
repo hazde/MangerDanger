@@ -47,10 +47,25 @@ public class Sound {
             p++;
             if (p>=count) p = 0;
         }
+        
+        public void stop() {
+        	if (clips==null) return;
+            clips[p].stop();
+        }
+        
+        public void stopAll() {
+            if (clips==null) return;
+            for (int i = 0; i < clips.length; i++) {
+            	clips[i].stop();
+            }
+        }
+        
     }
     public static Clips music = load("/Sounds/Music/music1.wav", 1);
     public static Clips music2 = load("/Sounds/Music/music2.wav", 1);
     public static Clips music3 = load("/Sounds/Music/funkymusic.wav", 1);
+    public static Clips music4 = load("/Sounds/Music/music3.wav", 1);
+    public static Clips music5 = load("/Sounds/Music/music4.wav", 1);
     public static Clips hit = load("/Sounds/hit.wav", 4);
     public static Clips menu = load("/Sounds/menu.wav", 4);
     public static Clips death = load("/Sounds/death.wav", 4);

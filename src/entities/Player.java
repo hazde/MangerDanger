@@ -92,7 +92,7 @@ public class Player extends MapObject {
 		health = maxHealth = 100;
 		pee = maxPee = 25000;
 
-		peeCost = 30;
+		peeCost = 15;
 		peeDamage = 2;
 		peeList = new ArrayList<Pee>();
 
