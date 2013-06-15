@@ -2,18 +2,19 @@
 
 	<property name="res" value="res" />
 	<property name="build" value="build" />
+	<property name="projectname" value="MangerDanger" />
 
 	<target name="build" depends="compile">
 	</target>
 
 	<target name="compile">
 		<mkdir dir="bin"/>
-		<javac srcdir="src" destdir="bin" classpath="${res}" />
+		<javac srcdir="src" destdir="bin" classpath="${res}" includeantruntime="false"/>
 	</target>
 
 	<target name="jar" description="Create jar-file." depends="clean,compile">
 		<mkdir dir="${build}"/>
-		<jar destfile="${build}/MangerDanger.jar" basedir="bin" update="true">
+		<jar destfile="${build}/${projectname}.jar" basedir="bin" update="true">
 			<fileset dir="${res}/" />
 		    <manifest>
 		      <attribute name="Main-Class"
@@ -28,7 +29,7 @@
 	</target>
 
  	<target name="run" depends="clean,compile,jar">
-        <java jar="${build}/MangerDanger.jar" fork="true" />
+        <java jar="${build}/${projectname}.jar" fork="true" />
     </target>
 
 </project>
