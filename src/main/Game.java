@@ -12,6 +12,5 @@ public class Game {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
-		System.out.println("hej");
 	}
 }
