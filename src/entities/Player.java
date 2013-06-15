@@ -90,9 +90,9 @@ public class Player extends MapObject {
 		facingRight = true;
 
 		health = maxHealth = 100;
-		pee = maxPee = 250000;
+		pee = maxPee = 25000;
 
-		peeCost = 10;
+		peeCost = 30;
 		peeDamage = 2;
 		peeList = new ArrayList<Pee>();
 
@@ -232,7 +232,7 @@ public class Player extends MapObject {
 			if (pee > maxPee) {
 				pee = maxPee;
 			} else {
-				pee++;
+				pee += 2;
 			}
 		}
 

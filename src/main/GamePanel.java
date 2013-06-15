@@ -73,7 +73,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		
 		init();	
 		
-		Sound.music3.play();
+		Sound.music2.play(true);
 		
 		while(running) {
 			

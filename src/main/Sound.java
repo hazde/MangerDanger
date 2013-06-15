@@ -23,10 +23,27 @@ public class Sound {
         
         public void play() {
             if (clips==null) return;
-
+            
+            
+            
             clips[p].stop();
             clips[p].setFramePosition(0);
             clips[p].start();
+            
+            p++;
+            if (p>=count) p = 0;
+        }
+        
+        public void play(boolean loop) {
+            if (clips==null) return;
+            
+            
+            
+            clips[p].stop();
+            clips[p].setFramePosition(0);
+            if (loop) clips[p].loop(Clip.LOOP_CONTINUOUSLY);
+            clips[p].start();
+            
             p++;
             if (p>=count) p = 0;
         }

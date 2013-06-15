@@ -111,8 +111,9 @@ public class Level1State extends Level {
 			//			System.out.println(enemies.get(i).getDiedFromFalling());
 			if (enemies.get(i).isDead() || enemies.get(i).getDiedFromFalling()) {
 				if (!enemies.get(i).getDiedFromFalling()) {
-					player.setExperience(1);
-					player.addText("+ 1 xp", player.getX(), player.getY() - 10, 1000,  new Color(0, 185, 0));
+					int xp = new Random().nextInt(3) + 1;
+					player.setExperience(xp);
+					player.addText("+ " + xp +  "xp", player.getX(), player.getY() - 10, 1000,  new Color(255, 211, 109));
 				} else {
 					player.addText("Mähähä! Han ramlade ner!", player.getX() - 20, player.getY() - 20, 700,  new Color(255, 255, 255), 0.2);
 				}
