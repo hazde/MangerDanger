@@ -38,7 +38,7 @@ public class MenuState extends GameState {
 		try {
 			bg = new Background("/Backgrounds/menubg.gif", 1);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
-			bg.setScroll(-0.1, 0);
+			bg.setScroll(-0.5, 0);
 
 			titleColor = new Color(255, 0, 255);
 			titleFont1 = new Font("Calibri", Font.BOLD, 18);

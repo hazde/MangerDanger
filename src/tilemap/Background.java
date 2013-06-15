@@ -43,7 +43,6 @@ public class Background {
 	public void draw(Graphics2D g) {
 		g.drawImage(image, (int) x, (int) y, null);
 
-
 		if (x < 0) {
 			g.drawImage(image, (int) x + GamePanel.WIDTH, (int) y, null);
 		}
@@ -52,14 +51,9 @@ public class Background {
 			g.drawImage(image, (int) x - GamePanel.WIDTH, (int) y, null);
 		}
 		
-//		g.drawImage(image, (int) x + GamePanel.WIDTH, 0, GamePanel.WIDTH, GamePanel.HEIGHT, (int) x, 0, (int)x - (image.getWidth() - GamePanel.WIDTH) / 2, 240, null);
-
-//		if (Math.abs((int) x - image.getWidth() / 2) > image.getWidth()) {
-//			renderX = GamePanel.WIDTH;
-//			x = image.getWidth() / 2;
-//			loop = !loop;
-//		}
-//		System.out.println((int)x - image.getWidth() / 2 + " - " + renderX + " - " + dx);
+		if ((x + image.getWidth()) < 0 || (x - image.getWidth() > 0)) {
+			x = 0;
+		}
 
 	}
 

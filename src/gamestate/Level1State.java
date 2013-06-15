@@ -44,7 +44,7 @@ public class Level1State extends Level {
 		}
 
 		bg = new Background("/Backgrounds/menubg.gif", 0.1);
-		//		bg.setScroll(-0.1, 0);
+		bg.setScroll(-0.2, 0);
 		player = new Player(tilemap);
 		player.setPosition(tilemap.getSpawnPointX() + (player.getWidth() / 2), tilemap.getSpawnPointY());
 		enemies = new ArrayList<Enemy>();
