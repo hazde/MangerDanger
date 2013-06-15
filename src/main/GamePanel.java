@@ -67,28 +67,29 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		
 		long lastTime = System.nanoTime();
 		double unprocessed = 0;
-		double nsPerTick = 1000000000.0 / 60;
+		double nsPerTick = 1000000000.0 / 100;
 		
 		long lastTimer1 = System.currentTimeMillis();
 		
 		init();	
 		
-		Sound.music2.play();
+		Sound.music3.play();
+		
 		while(running) {
 			
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
-			boolean shouldRender = true;
+			boolean shouldRender = false;
+//			System.out.println(unprocessed);
+			while (unprocessed >= 1) {
+				ticks++;
+				update();
+				unprocessed -= 1;
+				shouldRender = true;
+			}
 			
-//			while (unprocessed >= 1) {
-//				ticks++;
-//				update();
-//				unprocessed -= 1;
-//				shouldRender = true;
-//			}
-			
-			update();
+//			update();
 			if (shouldRender) {
 			frames++;
 			draw();
@@ -96,14 +97,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			}
 			
 			try {
-				Thread.sleep(8);
+				Thread.sleep(4);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
-			if (System.currentTimeMillis() - lastTimer1 > 1000) {
+			if (System.currentTimeMillis() - lastTimer1 >= 1000) {
 				lastTimer1 += 1000;
-				System.out.println(ticks + " ticks, " + frames + " fps");
+//				System.out.println(ticks + " ticks, " + frames + " fps");
 				fps = frames;
 				frames = 0;
 				ticks = 0;

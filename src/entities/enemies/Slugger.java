@@ -1,5 +1,6 @@
 package entities.enemies;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -31,6 +32,7 @@ public class Slugger extends Enemy {
 		
 		health = maxHealth = 4;
 		damage = 1;
+		setDiedFromFalling(false);
 		
 		try {
 			
@@ -75,6 +77,8 @@ public class Slugger extends Enemy {
 		
 	}
 	
+	
+	
 	public void update() {
 		getNextPosition();
 		checkTileMapCollision();
@@ -96,6 +100,9 @@ public class Slugger extends Enemy {
 			left = false;
 			facingRight = true;
 		}
+		if (falling && y > tilemap.getHeight()) {
+			setDiedFromFalling(true);
+			}
 		
 		if (dying && animation.hasPlayedOnce()) {
 			dead = true;
@@ -108,13 +115,14 @@ public class Slugger extends Enemy {
 	
 	public void hit(int damage) {
 		if (dead || flinching) return;
+		this.addText("" + damage, x, y - 10, 1000, new Color(255, 125, 0));
 		Sound.hit.play();
 		health -= damage;
 		if (health < 0) health = 0;
 		if (health == 0) {
 			dying = true;
 			animation.setFrames(hitSprites);
-			animation.setDelay(30);
+			animation.setDelay(35);
 			dx = 0;
 		}
 		flinching = true;

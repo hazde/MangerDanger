@@ -14,10 +14,15 @@ public class Pee extends MapObject {
 	
 	public Pee(TileMap tm, boolean right, Player player) {
 		super(tm);
-		moveSpeed = 2.3 + ((right ? -1 : 1) * player.getDX() + player.getPeeArcX()) ;
-		moveSpeedY = (-0.04 * new Random().nextGaussian() * 6) - (player.getDY() * 0.04) + player.getPeeArcY();
-		peeFallSpeed = 0.09;
-		
+		if (!player.isJumping() && !player.isFalling()) {
+			moveSpeed = 2.3 + ((right ? -1 : 1) * player.getDX() + player.getPeeArcX()) ;
+			moveSpeedY = -0.36 + (-0.04 * new Random().nextGaussian() * 6) - (player.getDY() * 0.04) + player.getPeeArcY();
+			peeFallSpeed = 0.037;
+		} else {
+			moveSpeed = 2.3 + ((right ? -1 : 1) * player.getDX() + player.getPeeArcX()) ;
+			moveSpeedY = (-0.04 * new Random().nextGaussian() * 6) - (player.getDY() * 0.04) + player.getPeeArcY();
+			peeFallSpeed = 0.09;
+		}
 		cWidth = 2;
 		cHeight = 2;
 		
@@ -52,8 +57,13 @@ public class Pee extends MapObject {
 
 		g.setColor(new Color(255, 224, 102));
 		g.fillRect((int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2), cWidth, cHeight);
-		g.setColor(new Color(255, 245, 117));
-		g.fillRect((int) (x + xMap - width / 2 + width) - 1, (int) (y + yMap - height / 2), cWidth, cHeight);
+		
+//		Rectangle temp = this.getRectangle();
+//		g.setColor(Color.BLACK);
+//		g.drawRect((int) (x + xMap - width / 2) , (int) (y + yMap - height / 2), (int) temp.getWidth(), (int) temp.getHeight());
+		
+//		g.setColor(new Color(255, 245, 117));
+//		g.fillRect((int) (x + xMap - width / 2 + width) - 1, (int) (y + yMap - height / 2), cWidth, cHeight);
 
 		
 	}

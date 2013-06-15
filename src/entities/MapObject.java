@@ -1,7 +1,9 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 import main.GamePanel;
 import main.Sound;
@@ -10,6 +12,7 @@ import tilemap.TileMap;
 
 public abstract class MapObject {
 	protected TileMap tilemap;
+	private ArrayList<FloatingText> floatText;
 	protected int tileSize;
 	protected double xMap;
 	protected double yMap;
@@ -71,22 +74,35 @@ public abstract class MapObject {
 		tilemap = tm;
 		tileSize = tm.getTileSize();
 		intersected = false;
+		floatText = new ArrayList<FloatingText>();
 	}
 	
 	public boolean intersects(MapObject o) {
 		Rectangle r1 = getRectangle();
 		Rectangle r2 = o.getRectangle();
-		if (r1.intersects(r2) && !intersected) {
-			intersected = true;
-			return true;
-		} else if (r1.intersects(r2) && intersected) {
-			return false;
-		}
+//		if (r1.intersects(r2) && !intersected) {
+//			intersected = true;
+//			return true;
+//		} else if (r1.intersects(r2) && intersected) {
+//			return false;
+//		}
 		return r1.intersects(r2);
 	}
 	
+	public void addText(String text, double x, double y, int duration, Color color) {
+		FloatingText t = new FloatingText(tilemap, text, duration, color, -999.0);
+		t.setPosition(x, y - 20);
+		floatText.add(t);
+	}
+	
+	public void addText(String text, double x, double y, int duration, Color color, double fallingSpeed) {
+		FloatingText t = new FloatingText(tilemap, text, 1500, color, fallingSpeed);
+		t.setPosition(x, y - 20);
+		floatText.add(t);
+	}
+	
 	public Rectangle getRectangle() {
-		return new Rectangle((int)x - cWidth, (int)y - cHeight, cWidth, cHeight);
+		return new Rectangle((int)x - cWidth + 3, (int)y - cHeight, cWidth, cHeight);
 	}
 	
 	public void calculateCorners(double x, double y) {
@@ -168,6 +184,10 @@ public abstract class MapObject {
 			}
 		}
 		
+		for (int i = 0; i < floatText.size(); i++) {
+			floatText.get(i).update();
+		}
+		
 	}
 	
 	public int getX() {return (int) x;}
@@ -218,6 +238,19 @@ public abstract class MapObject {
 		} else {
 			g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 4, -width, height, null);
 		}
+		
+		for (int i = 0; i < floatText.size(); i++) {
+			floatText.get(i).draw(g);
+			if (floatText.get(i).shouldRemove()) {
+				floatText.remove(i);
+				i--;
+			}
+		}
+		
+		// rita ut hitboxar
+//		Rectangle temp = this.getRectangle();
+//		g.drawRect((int) (x + xMap - width / 2) + 3, (int) (y + yMap - height / 2), (int) temp.getWidth(), (int) temp.getHeight());
+		
 	}
 	
 }

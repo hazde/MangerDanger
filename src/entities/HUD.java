@@ -15,10 +15,8 @@ public class HUD {
 		this.player = player;
 		try {
 			
-			image = ImageIO.read(getClass().getResourceAsStream("/HUD/hud.png"));
-			font = new Font("Calibri", Font.PLAIN, 14);
-			
-			
+			image = ImageIO.read(getClass().getResourceAsStream("/HUD/hud2.png"));
+			font = new Font("System", Font.PLAIN, 10);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -28,7 +26,8 @@ public class HUD {
 	public void draw(Graphics2D g) {
 		g.drawImage(image, 0, 5, null);
 		g.setFont(font);
-		g.drawString(player.getHealth() + "/" + player.getMaxHealth(), 25, 19);
+		g.drawString(player.getHealth() + "/" + player.getMaxHealth(), 23, 18);
 		g.drawString(player.getPee() / 100 + "/" + player.getMaxPee() / 100, 20, 39);
+		g.drawString(player.getExperience() + "/" + player.getNextLevel(), 29, 59);
 	}
 }

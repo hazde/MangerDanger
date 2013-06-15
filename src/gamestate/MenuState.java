@@ -14,15 +14,15 @@ import tilemap.Background;
 
 public class MenuState extends GameState {
 	private Background bg;
-	
+
 	private static final int START = 0;
 	private static final int OPTIONS = 1;
 	private static final int HELP = 2;
 	private static final int QUIT = 3;
-	
+
 	private String[] options = { "Nytt spel", "Alternativ", "Hjälp", "Avsluta" };
-	private String[] description = { "Släpp lös Mange!", "Det är valfritt", "Hjäääääääääälp!", "Avsluta möget" };
-	
+	private String[] description = { "Släpp lös Mange!", "Det är valfritt", "Hjääääääälp!", "Avsluta möget" };
+
 	private BufferedImage mange;
 	private int currentChoice = 0;
 
@@ -62,10 +62,10 @@ public class MenuState extends GameState {
 		// Rita bakgrundsbilden
 		bg.draw(g);
 
-		// Rita en alltmer nyfiken mange beroende på menyvalen
+		// Rita en alltmer nyfiken mange beroende p� menyvalen
 		g.drawImage(mange, 130 + currentChoice * 25, 0, null);
 
-		
+
 		g.setFont(titleFont1);
 		g.setColor(Color.BLACK);
 		g.drawString(title1, GamePanel.WIDTH / 2 - (title1.length() * 7 - 1), 41);
@@ -90,17 +90,26 @@ public class MenuState extends GameState {
 			} else {
 				g.setColor(Color.BLACK);
 				g.drawString(options[i], 31, 171 + i * 15);
+				if (i != 0 && i != 3) {
 				g.setColor(Color.LIGHT_GRAY);
 				g.drawString(options[i], 30, 170 + i * 15);
+				} else {
+					g.setColor(Color.WHITE);
+					g.drawString(options[i], 30, 170 + i * 15);
+				}
 			}
 
 		}
 
-		g.setColor(Color.BLACK);
-		g.setFont(new Font("Calibri", Font.ITALIC, 12));
-		g.drawString(description[currentChoice], 31 , 151);
-		g.setColor(Color.WHITE);
-		g.drawString(description[currentChoice], 30, 151);
+		try {
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("Calibri", Font.ITALIC, 12));
+			g.drawString(description[currentChoice], 31 , 151);
+			g.setColor(Color.WHITE);
+			g.drawString(description[currentChoice], 30, 151);
+		} catch  (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
