@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -35,6 +36,9 @@ public class Player extends MapObject {
 	
 	private double peeArcX;
 	private double peeArcY;
+	
+	private int experience;
+	private int nextLevel;
 
 	private ArrayList<Pee> peeList;
 
@@ -78,16 +82,18 @@ public class Player extends MapObject {
 		peeArcX = 0;
 		peeArcY = 0;
 		
-
+		experience = 0;
+		nextLevel = 500;
+		
 		dead = false;
 
 		facingRight = true;
 
-		health = maxHealth = 5;
+		health = maxHealth = 100;
 		pee = maxPee = 250000;
 
 		peeCost = 10;
-		peeDamage = 1;
+		peeDamage = 2;
 		peeList = new ArrayList<Pee>();
 
 		scratchDamage = 8;
@@ -169,6 +175,14 @@ public class Player extends MapObject {
 		if (falling) {
 			if (dy > 0 && gliding) {
 				dy += fallSpeed * 0.05;
+				if (this.y > tilemap.getHeight() + 30) {
+					setGliding(false);
+					if (lastFacing) {
+						setPosition(lastWalkableX - 20, lastWalkableY - 40);
+					} else {
+						setPosition(lastWalkableX + 20, lastWalkableY - 40);
+					}
+				}
 			} else {
 				dy += fallSpeed;
 				if (this.y > tilemap.getHeight() + 100) {
@@ -230,7 +244,7 @@ public class Player extends MapObject {
 			}
 		}
 
-		// ange vilken animation som ska genomföras beroende på currentAction
+		// ange vilken animation som ska genomf�ras beroende p� currentAction
 		if (scratching) {
 			if (currentAction != SCRATCHING) {
 				currentAction = SCRATCHING;
@@ -314,7 +328,7 @@ public class Player extends MapObject {
 	public void checkAttack(ArrayList<Enemy> enemies) {
 		synchronized (enemies) {
 			for (Enemy e : enemies) {
-
+		
 				// scratch
 				if (scratching) {
 					if (facingRight) {
@@ -334,7 +348,7 @@ public class Player extends MapObject {
 
 				for (int i = 0; i < peeList.size(); i++) {
 					if (peeList.get(i).intersects(e)) {
-						e.hit(peeDamage);
+						e.hit(peeDamage + ((new Random().nextInt(2)) * (new Random().nextInt(2) + 1)) + new Random().nextInt(2));
 						peeList.get(i).setHit();
 						break;
 					}
@@ -407,6 +421,9 @@ public class Player extends MapObject {
 	
 	public boolean isPeeing() {return peeing;}
 	
+	public int getExperience() {return experience;}
+	public int getNextLevel() {return nextLevel;}
+	public void setExperience(int amount) {experience += amount;}
 	
 
 }

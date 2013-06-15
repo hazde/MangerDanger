@@ -10,6 +10,7 @@ public class Enemy extends MapObject {
 	protected int maxHealth;
 	protected boolean dead;
 	protected int damage;
+	protected boolean diedFromFalling;
 	
 	protected boolean flinching;
 	protected long flinchTimer;
@@ -20,6 +21,9 @@ public class Enemy extends MapObject {
 	
 	public boolean isDead() {return dead;}
 	public int getDamage() {return damage;}
+	
+	public boolean getDiedFromFalling() {return diedFromFalling;}
+	public void setDiedFromFalling(boolean b) {diedFromFalling = b;}
 	
 	public void hit(int damage) {
 		
