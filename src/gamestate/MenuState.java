@@ -20,8 +20,8 @@ public class MenuState extends GameState {
 	private static final int HELP = 2;
 	private static final int QUIT = 3;
 	
-	private String[] options = { "Nytt spel", "Alternativ", "Hj‰lp", "Avsluta" };
-	private String[] description = { "Sl‰pp lˆs Mange!", "Det ‰r valfritt", "Hj‰‰‰‰‰‰‰‰‰‰lp!", "Avsluta mˆget" };
+	private String[] options = { "Nytt spel", "Alternativ", "Hj√§lp", "Avsluta" };
+	private String[] description = { "Sl√§pp l√∂s Mange!", "Det √§r valfritt", "Hj√§√§√§√§√§√§√§√§√§√§lp!", "Avsluta m√∂get" };
 	
 	private BufferedImage mange;
 	private int currentChoice = 0;
@@ -62,7 +62,7 @@ public class MenuState extends GameState {
 		// Rita bakgrundsbilden
 		bg.draw(g);
 
-		// Rita en alltmer nyfiken mange beroende pÂ menyvalen
+		// Rita en alltmer nyfiken mange beroende p√• menyvalen
 		g.drawImage(mange, 130 + currentChoice * 25, 0, null);
 
 		

@@ -230,7 +230,7 @@ public class Player extends MapObject {
 			}
 		}
 
-		// ange vilken animation som ska genomföras beroende på currentAction
+		// ange vilken animation som ska genomfÃ¶ras beroende pÃ¥ currentAction
 		if (scratching) {
 			if (currentAction != SCRATCHING) {
 				currentAction = SCRATCHING;

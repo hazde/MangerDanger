@@ -1,0 +1,30 @@
+<project name="BuildTree" default="build">
+
+	<property name="res" value="res" />
+	<property name="build" value="build" />
+
+	<target name="build" depends="compile">
+	</target>
+
+	<target name="compile">
+		<mkdir dir="bin"/>
+		<javac srcdir="src" destdir="bin" classpath="${res}" />
+	</target>
+
+	<target name="jar" description="Create jar-file." depends="clean,compile">
+		<mkdir dir="${build}"/>
+		<jar destfile="${build}/MangerDanger.jar" basedir="bin" update="true">
+			<fileset dir="${res}/" />
+		    <manifest>
+		      <attribute name="Main-Class"
+		            value="main.Game"/>
+		    </manifest>
+  		</jar>
+	</target>
+
+	<target name="clean" description="Delete generated files.">
+		<delete dir="bin" />
+		<delete dir="${build}" />
+	</target>
+
+</project>
