@@ -25,7 +25,7 @@ public class Enemy extends MapObject {
 	public boolean getDiedFromFalling() {return diedFromFalling;}
 	public void setDiedFromFalling(boolean b) {diedFromFalling = b;}
 	
-	public void hit(int damage) {
+	public void hit(int damage, boolean fromLeft) {
 		
 	}
 	

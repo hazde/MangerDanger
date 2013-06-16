@@ -138,12 +138,14 @@ public class TileMap {
 
 	public int getType(int row, int col) {
 		try {
+			
 			int rc = map[row][col];
 			int r = rc / numTilesAcross;
 			int c = rc % numTilesAcross;
 			return tiles[r][c].getType();
 		} catch (ArrayIndexOutOfBoundsException e) {
-			//			e.printStackTrace();
+			System.out.println(numRows + ":" + numCols + " - " + row + ":" + col);
+						e.printStackTrace();
 		}
 		return 0;
 	}

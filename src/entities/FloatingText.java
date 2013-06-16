@@ -17,7 +17,7 @@ public class FloatingText extends MapObject {
 	private double textUpStart;
 	private Color color;
 	
-	public FloatingText(TileMap tm, String msg, int duration, Color color, double fallingSpeed) {
+	public FloatingText(TileMap tm, String msg, int duration, Color color, double fallingSpeed, boolean onlyVertical) {
 		super(tm);
 		text = msg;
 		this.duration = duration;
@@ -38,7 +38,7 @@ public class FloatingText extends MapObject {
 		cWidth = 20;
 		cHeight = 2;
 		
-		dx = -moveSpeed;
+		if (!onlyVertical) dx = -moveSpeed;
 		dy = textUpStart;
 		
 	}
@@ -49,7 +49,8 @@ public class FloatingText extends MapObject {
 	
 	public void update() {
 		dy += textFallSpeed * 0.1;
-		checkTileMapCollision();
+		updatePosition();
+		updateCollisionFreeEntities();
 		setPosition(xTemp, yTemp);
 //		if (dx < 0 && dy < 0) {
 //			shouldRemove = true;

@@ -23,14 +23,14 @@ public class Slugger extends Enemy {
 		moveSpeed = 0.3;
 		maxSpeed = 0.3;
 		fallSpeed = 0.2;
-		maxFallSpeed = 10.0;
+		maxFallSpeed = 3.0;
 		
 		width = 30;
 		height = 30;
 		cWidth = 20;
 		cHeight = 20;
 		
-		health = maxHealth = 4;
+		health = maxHealth = 50;
 		damage = 1;
 		setDiedFromFalling(false);
 		
@@ -81,6 +81,7 @@ public class Slugger extends Enemy {
 	
 	public void update() {
 		getNextPosition();
+		updatePosition();
 		checkTileMapCollision();
 		setPosition(xTemp, yTemp);
 		
@@ -106,21 +107,22 @@ public class Slugger extends Enemy {
 		
 		if (dying && animation.hasPlayedOnce()) {
 			dead = true;
-			Sound.death.play();
 		}
 		
 		animation.update();
 		
 	}
 	
-	public void hit(int damage) {
-		if (dead || flinching) return;
+	@Override
+	public void hit(int damage, boolean fromLeft) {
+		if (dead || flinching) return;	
 		this.addText("" + damage, x, y - 10, 1000, new Color(255, 125, 0));
 		Sound.hit.play();
 		health -= damage;
 		if (health < 0) health = 0;
 		if (health == 0) {
 			dying = true;
+//			Sound.death.play();
 			animation.setFrames(hitSprites);
 			animation.setDelay(35);
 			dx = 0;

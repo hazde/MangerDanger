@@ -16,21 +16,21 @@ public abstract class MapObject {
 	protected int tileSize;
 	protected double xMap;
 	protected double yMap;
-	
+
 	// position
 	protected double x;
 	protected double y;
 	protected double dx;
 	protected double dy;
-	
+
 	// dimension
 	protected int width;
 	protected int height;
-	
+
 	// collision box
 	protected int cWidth;
 	protected int cHeight;
-	
+
 	// collision
 	protected int curRow;
 	protected int curCol;
@@ -39,20 +39,20 @@ public abstract class MapObject {
 	protected double xTemp;
 	protected double yTemp;
 	protected boolean intersected;
-	
+
 	protected boolean topLeft;
 	protected boolean topRight;
 	protected boolean bottomLeft;
 	protected boolean bottomRight;
-	
+
 	// animation
 	protected Animation animation;
 	protected int currentAction;
 	protected int previousAction;
 	protected boolean facingRight;
-	
+
 	// movement
-	
+
 	protected boolean left;
 	protected boolean right;
 	protected boolean up;
@@ -60,7 +60,7 @@ public abstract class MapObject {
 	protected boolean jumping;
 	protected boolean falling;
 	protected boolean active;
-	
+
 	// movement attributes
 	protected double moveSpeed;
 	protected double maxSpeed;
@@ -69,76 +69,98 @@ public abstract class MapObject {
 	protected double maxFallSpeed;
 	protected double jumpStart;
 	protected double stopJumpSpeed;
-	
+
 	public MapObject(TileMap tm) {
 		tilemap = tm;
 		tileSize = tm.getTileSize();
 		intersected = false;
 		floatText = new ArrayList<FloatingText>();
 	}
-	
+
 	public boolean intersects(MapObject o) {
 		Rectangle r1 = getRectangle();
 		Rectangle r2 = o.getRectangle();
-//		if (r1.intersects(r2) && !intersected) {
-//			intersected = true;
-//			return true;
-//		} else if (r1.intersects(r2) && intersected) {
-//			return false;
-//		}
+		//		if (r1.intersects(r2) && !intersected) {
+		//			intersected = true;
+		//			return true;
+		//		} else if (r1.intersects(r2) && intersected) {
+		//			return false;
+		//		}
 		return r1.intersects(r2);
 	}
-	
+
 	public void addText(String text, double x, double y, int duration, Color color) {
-		FloatingText t = new FloatingText(tilemap, text, duration, color, -999.0);
+		FloatingText t = new FloatingText(tilemap, text, duration, color, -999.0, false);
 		t.setPosition(x, y - 20);
 		floatText.add(t);
 	}
-	
+
 	public void addText(String text, double x, double y, int duration, Color color, double fallingSpeed) {
-		FloatingText t = new FloatingText(tilemap, text, 1500, color, fallingSpeed);
+		FloatingText t = new FloatingText(tilemap, text, 1500, color, fallingSpeed, false);
 		t.setPosition(x, y - 20);
 		floatText.add(t);
 	}
-	
+
+	public void addText(String text, double x, double y, int duration, Color color, double fallingSpeed, boolean onlyVertical) {
+		FloatingText t = new FloatingText(tilemap, text, 1500, color, fallingSpeed, onlyVertical);
+		t.setPosition(x, y - 20);
+		floatText.add(t);
+	}
+
 	public Rectangle getRectangle() {
 		return new Rectangle((int)x - cWidth + 3, (int)y - cHeight, cWidth, cHeight);
 	}
-	
+
 	public void calculateCorners(double x, double y) {
-		
+
 		int leftTile = (int) (x - cWidth / 2) / tileSize;
 		int rightTile = (int) (x + cWidth / 2 - 1) / tileSize;
 		int topTile = (int) (y - cHeight / 2) / tileSize;
 		int bottomTile = (int) (y + cWidth / 2 - 1) / tileSize;
-		
-		if (y < 0) {
-			topTile = 0;
-			bottomTile = 0;
+
+		if (y < 0) {											// Entity är ovanför banans upper bound
+			topTile = bottomTile = 0;
+		} else if (y + cWidth / 2 > tilemap.getHeight()) {		// Entity är nedanför banans lower bound
+
+			bottomTile = (tilemap.getHeight() / tileSize) - 1;
+			topTile = bottomTile;		
 		}
-		
+
 		int tl = tilemap.getType(topTile, leftTile);
 		int tr = tilemap.getType(topTile, rightTile);
 		int bl = tilemap.getType(bottomTile, leftTile);
 		int br = tilemap.getType(bottomTile, rightTile);
-		
+
 		topLeft = tl == Tile.BLOCKED;
 		topRight = tr == Tile.BLOCKED;
 		bottomLeft = bl == Tile.BLOCKED;
 		bottomRight = br == Tile.BLOCKED;
-		
+
 	}
-	
-	public void checkTileMapCollision() {
+
+	public void updatePosition() {
 		curCol = (int) x / tileSize;
 		curRow = (int) y / tileSize;
-		
+
 		xDest = x + dx;
 		yDest = y + dy;
-		
+
 		xTemp = x;
 		yTemp = y;
-		
+
+
+
+		for (int i = 0; i < floatText.size(); i++) {
+			floatText.get(i).update();
+		}
+	}
+
+	public void updateCollisionFreeEntities() {
+		yTemp += dy;
+		xTemp += dx;
+	}
+
+	public void checkTileMapCollision() {
 		calculateCorners(x, yDest);
 		if (dy < 0) {
 			if (topLeft || topRight) {
@@ -148,7 +170,7 @@ public abstract class MapObject {
 				yTemp += dy;
 			}
 		}
-		
+
 		if (dy > 0) {
 			if (bottomLeft || bottomRight) {
 				dy = 0;
@@ -158,7 +180,7 @@ public abstract class MapObject {
 				yTemp += dy;
 			}
 		}
-		
+
 		calculateCorners(xDest, y);
 		if (dx < 0) {
 			if (topLeft || bottomLeft) {
@@ -176,47 +198,43 @@ public abstract class MapObject {
 				xTemp += dx;
 			}
 		}
-		
+
 		if (!falling) {
 			calculateCorners(x, yDest + 1);
 			if (!bottomLeft && !bottomRight) {
 				falling = true;
 			}
 		}
-		
-		for (int i = 0; i < floatText.size(); i++) {
-			floatText.get(i).update();
-		}
-		
+
 	}
-	
+
 	public int getX() {return (int) x;}
-	
+
 	public int getY() {return (int) y;}
-	
+
 	public int getWidth() {return width;}
-	
+
 	public int getHeight() {return height;}
-	
+
 	public int getCWidth() {return cWidth;}
-	
+
 	public int getHCeight() {return cHeight;}
-	
+
 	public void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public void setVector(double dx, double dy) {
 		this.dx = dx;
 		this.dy = dy;
 	}
-	
+
 	public void setMapPosition() {
 		xMap = tilemap.getX();
 		yMap = tilemap.getY();
 	}
-	
+
 	public void setLeft(boolean b) {left = b;}
 	public void setRight(boolean b) {right = b;}
 	public void setUp(boolean b) {up = b;}
@@ -229,16 +247,19 @@ public abstract class MapObject {
 	public double getDY() {return dy;}
 
 	public boolean notOnScreen() {
-		return x + xMap + width < 0 || x + xMap - width > GamePanel.WIDTH || y + yMap + height < 0 || y + yMap - height > GamePanel.HEIGHT;
+		return x + xMap + width < 0 ||
+			x + xMap - width > GamePanel.WIDTH ||
+			y + yMap + height < 0 ||
+			y + yMap - height > GamePanel.HEIGHT;
 	}
-	
+
 	public void draw(Graphics2D g) {
 		if (facingRight) {
 			g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 4, null);
 		} else {
 			g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 4, -width, height, null);
 		}
-		
+
 		for (int i = 0; i < floatText.size(); i++) {
 			floatText.get(i).draw(g);
 			if (floatText.get(i).shouldRemove()) {
@@ -246,11 +267,11 @@ public abstract class MapObject {
 				i--;
 			}
 		}
-		
-		// rita ut hitboxar
-//		Rectangle temp = this.getRectangle();
-//		g.drawRect((int) (x + xMap - width / 2) + 3, (int) (y + yMap - height / 2), (int) temp.getWidth(), (int) temp.getHeight());
-		
+
+//		 rita ut hitboxar
+//				Rectangle temp = this.getRectangle();
+//				g.drawRect((int) (x + xMap - width / 2), (int) (y + yMap - height / 2) , (int) temp.getWidth(), (int) temp.getHeight());
+
 	}
-	
+
 }

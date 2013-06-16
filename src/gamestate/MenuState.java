@@ -2,8 +2,10 @@ package gamestate;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -20,8 +22,10 @@ public class MenuState extends GameState {
 	private static final int HELP = 2;
 	private static final int QUIT = 3;
 
+	private GamePanel panel;
+
 	private String[] options = { "Nytt spel", "Alternativ", "Hjälp", "Avsluta" };
-	private String[] description = { "Släpp lös Mange!", "Det är valfritt", "Hjääääääälp!", "Avsluta möget" };
+	private String[] description = { "Enter the Dainger Zone", "\"Upplösning\": ", "Hjääääääälp!", "Avsluta möget" };
 
 	private BufferedImage mange;
 	private int currentChoice = 0;
@@ -32,18 +36,27 @@ public class MenuState extends GameState {
 	private String title1 = "The adventures of";
 	private String title2 = "Manger Danger";
 	private Font font;
+	private int setScale;
 
-	public MenuState(GameStateManager manager) {
+	public void terminate() {
+		this.bg = null;
+		this.panel = null;
+		this.manager = null;
+		Sound.stopAllMusic();
+	}
+	
+	public MenuState(GameStateManager manager, GamePanel panel) {
 		this.manager = manager;
+		this.panel = panel;
 		try {
-			bg = new Background("/Backgrounds/menubg.gif", 1);
+			bg = new Background("/Backgrounds/menu.png", 1);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
 			bg.setScroll(-0.5, 0);
 
 			titleColor = new Color(255, 0, 255);
-			titleFont1 = new Font("Calibri", Font.BOLD, 18);
-			titleFont2 = new Font("Century Gothic", Font.BOLD, 36);
-			font = new Font("Arial", Font.BOLD, 14);
+			titleFont1 = new Font("Eras Bold ITC", Font.BOLD, 18);
+			titleFont2 = new Font("Eras Bold ITC", Font.BOLD, 40);
+			font = new Font("Eras Bold ITC", Font.BOLD, 16);
 
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -52,7 +65,8 @@ public class MenuState extends GameState {
 	}
 
 	public void init() {
-		Sound.music4.play(true);
+		Sound.deathscreen3.play(true);
+		setScale = panel.getScale();
 	}
 
 	public void update() {
@@ -63,54 +77,81 @@ public class MenuState extends GameState {
 		// Rita bakgrundsbilden
 		bg.draw(g);
 
-		// Rita en alltmer nyfiken mange beroende p� menyvalen
-		g.drawImage(mange, 130 + currentChoice * 25, 0, null);
-
+		// Rita en alltmer nyfiken mange beroende på menyvalen
+		g.drawImage(mange, (GamePanel.WIDTH - 370) + currentChoice * 45, 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
 
 		g.setFont(titleFont1);
 		g.setColor(Color.BLACK);
-		g.drawString(title1, GamePanel.WIDTH / 2 - (title1.length() * 7 - 1), 41);
+		g.drawString(title1, 20, 41);
 		g.setColor(titleColor);
-		g.drawString(title1, GamePanel.WIDTH / 2 - (title1.length() * 7), 40);
+		g.drawString(title1, 21, 40);
 
 		g.setFont(titleFont2);
 		g.setColor(Color.BLACK);
-		g.drawString(title2, GamePanel.WIDTH / 2 - (title2.length() * 11 - 2), 72);
+		g.drawString(title2, 20, 74);
 		g.setColor(titleColor);
-		g.drawString(title2, GamePanel.WIDTH / 2 - (title2.length() * 11), 70);
+		g.drawString(title2, 21, 72);
 
 
 		// Rita ut menyvalen
 		g.setFont(font);
+		FontMetrics fm = g.getFontMetrics();
 		for (int i = 0; i < options.length; i++) {
 			if (i ==  currentChoice) {
-				g.setColor(Color.BLACK);
-				g.drawString("> " + options[i], 31, 171 + i * 15);
-				g.setColor(titleColor);
-				g.drawString("> " + options[i], 30, 170 + i * 15);
+				if (currentChoice == OPTIONS) {
+					g.setColor(Color.BLACK);
+					String str = options[i] + " - <" + setScale + ">";
+					Rectangle2D r = fm.getStringBounds(str, g);
+					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 271 + i * 20);
+					g.setColor(titleColor);
+					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 270 + i * 20);
+				} else {
+					g.setColor(Color.BLACK);
+					Rectangle2D r = fm.getStringBounds(options[i], g);
+					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					g.drawString(options[i], x + 1, 271 + i * 20);
+					g.setColor(titleColor);
+					g.drawString(options[i], x, 270 + i * 20);
+				}
+				
 			} else {
+				Rectangle2D r = fm.getStringBounds(options[i], g);
+				int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
 				g.setColor(Color.BLACK);
-				g.drawString(options[i], 31, 171 + i * 15);
-				if (i != 0 && i != 3) {
-				g.setColor(Color.LIGHT_GRAY);
-				g.drawString(options[i], 30, 170 + i * 15);
+				g.drawString(options[i], x + 1, 271 + i * 20);
+				if (i == 2) {
+					g.setColor(Color.LIGHT_GRAY);
+					g.drawString(options[i], x, 270 + i * 20);
 				} else {
 					g.setColor(Color.WHITE);
-					g.drawString(options[i], 30, 170 + i * 15);
+					g.drawString(options[i], x, 270 + i * 20);
 				}
 			}
 
 		}
 
-		try {
+		g.setFont(new Font("Calibri", Font.ITALIC, 12));
+		fm = g.getFontMetrics();
+		if (currentChoice == OPTIONS) {
 			g.setColor(Color.BLACK);
-			g.setFont(new Font("Calibri", Font.ITALIC, 12));
-			g.drawString(description[currentChoice], 31 , 151);
+			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": "");
+			Rectangle2D r = fm.getStringBounds(str, g);
+			int x = (int) (r.getWidth() / str.length() + 7);
+			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x + 1 , y);
 			g.setColor(Color.WHITE);
-			g.drawString(description[currentChoice], 30, 151);
-		} catch  (Exception e) {
-			e.printStackTrace();
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x, y);
+		} else {
+			g.setColor(Color.BLACK);
+			Rectangle2D r = fm.getStringBounds(description[currentChoice], g);
+			int x = (int) (r.getWidth() / description[currentChoice].length() + 7);
+			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			g.drawString(description[currentChoice], x + 1 , y);
+			g.setColor(Color.WHITE);
+			g.drawString(description[currentChoice], x, y);
 		}
+
 
 	}
 
@@ -120,23 +161,37 @@ public class MenuState extends GameState {
 		}
 
 		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
-			currentChoice--;
 			Sound.menu.play();
-			if (currentChoice < 0) {
+			if (--currentChoice < 0) {
 				currentChoice = options.length - 1;
 			}
 		}
 
-		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
-			currentChoice++;
-			Sound.menu.play();
-			if (currentChoice == options.length) {
-				currentChoice = 0;
+		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
+			if (currentChoice == OPTIONS) {
+				if (setScale > 1) {
+					setScale--;
+					Sound.menu.play();
+					panel.setScale(setScale);
+				}
 			}
 		}
 
-		if (k == KeyEvent.VK_ENTER) {
-			select();
+		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
+			if (currentChoice == OPTIONS) {
+				if (setScale < 3) {
+					setScale++;
+					Sound.menu.play();
+					panel.setScale(setScale);
+				}
+			}
+		}
+
+		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
+			Sound.menu.play();
+			if (++currentChoice == options.length) {
+				currentChoice = 0;
+			}
 		}
 	}
 
@@ -144,10 +199,11 @@ public class MenuState extends GameState {
 		switch (currentChoice) {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
-			Sound.music4.stop();
-			Sound.music3.play(true);
+			Sound.stopAllMusic();
+			Sound.music2.play(true);
 			break;
 		case OPTIONS:
+
 			break;
 		case HELP:
 			break;
@@ -160,5 +216,7 @@ public class MenuState extends GameState {
 
 	public void keyReleased(int k) {
 	}
+
+	
 
 }

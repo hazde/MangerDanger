@@ -41,14 +41,14 @@ public class Background {
 	}
 
 	public void draw(Graphics2D g) {
-		g.drawImage(image, (int) x, (int) y, null);
+		g.drawImage(image, (int) x, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
 
 		if (x < 0) {
-			g.drawImage(image, (int) x + GamePanel.WIDTH, (int) y, null);
+			g.drawImage(image, (int) x + GamePanel.WIDTH, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
 		}
 		
 		if (x > 0) {
-			g.drawImage(image, (int) x - GamePanel.WIDTH, (int) y, null);
+			g.drawImage(image, (int) x - GamePanel.WIDTH, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
 		}
 		
 		if ((x + image.getWidth()) < 0 || (x - image.getWidth() > 0)) {

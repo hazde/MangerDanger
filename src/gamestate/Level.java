@@ -3,6 +3,8 @@ package gamestate;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+import main.Sound;
+
 import tilemap.Background;
 import tilemap.TileMap;
 import entities.Enemy;
@@ -44,6 +46,16 @@ public class Level extends GameState {
 
 	public void keyReleased(int k) {
 
+	}
+
+	public void terminate() {
+		tilemap = null;
+		bg = null;
+		player = null;
+		enemies.clear();
+		hud = null;
+		manager = null;
+		Sound.stopAllMusic();
 	}
 	
 }

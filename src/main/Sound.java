@@ -51,13 +51,12 @@ public class Sound {
         public void stop() {
         	if (clips==null) return;
             clips[p].stop();
+            p++;
+            if (p>=count) p = 0;
         }
         
-        public void stopAll() {
-            if (clips==null) return;
-            for (int i = 0; i < clips.length; i++) {
-            	clips[i].stop();
-            }
+        public boolean isPlaying() {
+        	return clips[p].isRunning();
         }
         
     }
@@ -66,7 +65,10 @@ public class Sound {
     public static Clips music3 = load("/Sounds/Music/funkymusic.wav", 1);
     public static Clips music4 = load("/Sounds/Music/music3.wav", 1);
     public static Clips music5 = load("/Sounds/Music/music4.wav", 1);
-    public static Clips hit = load("/Sounds/hit.wav", 4);
+    public static Clips deathscreen = load("/Sounds/Music/deathscreen.wav", 1);
+    public static Clips deathscreen2 = load("/Sounds/Music/deathscreen2.wav", 1);
+    public static Clips deathscreen3 = load("/Sounds/Music/deathscreen3.wav", 1);
+    public static Clips hit = load("/Sounds/hit.wav", 64);
     public static Clips menu = load("/Sounds/menu.wav", 4);
     public static Clips death = load("/Sounds/death.wav", 4);
     public static Clips jump = load("/Sounds/jump.wav", 1);
@@ -91,6 +93,21 @@ public class Sound {
                 return null;
             }
         }
+    }
+    
+    public static void stopAllMusic() {
+    	music.stop();
+    	music2.stop();
+    	music3.stop();
+    	music4.stop();
+    	music5.stop();
+    	deathscreen.stop();
+    	deathscreen2.stop();
+    	deathscreen3.stop();
+    }
+    
+    public static boolean isPlaying(Clips clip) {
+    	return clip.isPlaying();
     }
 
     public static void touch() {
