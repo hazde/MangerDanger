@@ -40,6 +40,8 @@ public class Player extends MapObject {
 	private int peeCost;
 	private int peeDamage;
 	private int peeBallDamage;
+	private int timeBetweenPeeBalls;
+	private int peeBallCounter;
 
 	private double peeArcX;
 	private double peeArcY;
@@ -84,16 +86,18 @@ public class Player extends MapObject {
 		moveSpeed = 0.2;
 		maxSpeed = 1.9;
 		stopSpeed = 0.3;
-		fallSpeed = 0.10;
+		fallSpeed = 0.09;
 		maxFallSpeed = 4.2;
-		jumpStart = -5.2;
-		stopJumpSpeed = 0.3;
+		jumpStart = -4.2;
+		stopJumpSpeed = 0.2;
 
 		throwingPeeball = false;
 		drawTrajectory = false;
 
 		peeReminderTimer = 0;
 		peeReminderDuration = 10000;
+
+		peeBallCounter = timeBetweenPeeBalls = 40;
 
 		peeArcX = 0;
 		peeArcY = 0;
@@ -262,12 +266,14 @@ public class Player extends MapObject {
 		}
 
 		if (throwingPeeball) {
-			if (peeballs.size() < 1) {
+			if (peeBallCounter >= timeBetweenPeeBalls) {
 				PeeBall ball = new PeeBall(tilemap, facingRight, this, facingRight);
 				ball.setPosition(this.getX(), this.getY());
 				peeballs.add(ball);
+				peeBallCounter = 0;
 			}
 		}
+		peeBallCounter++;
 
 		if (!peeing) {
 
@@ -428,7 +434,19 @@ public class Player extends MapObject {
 
 
 				if (intersects(e)) {
-					hit(e.getDamage());
+					if (falling && !jumping && !e.falling) {
+						if ((y + cHeight) < (e.getY() + e.getCWidth())) {
+							e.hit(5000, false);
+						} else {
+							if (!e.isDying()) {
+								hit(e.getDamage());
+							}
+						}
+					} else {
+						if (!e.isDying()) {
+							hit(e.getDamage());
+						}
+					}
 				}
 
 			}
@@ -557,7 +575,7 @@ public class Player extends MapObject {
 	public int getTileStandingOn() {
 		return standingOnTile;
 	}
-	
+
 	public void addBeer(int amount) {
 		if (pee == maxPee) return;
 		pee += amount;

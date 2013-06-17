@@ -21,7 +21,7 @@ public class Slugger extends Enemy {
 	public Slugger(TileMap tm) {
 		super(tm);
 		moveSpeed = 0.3;
-		maxSpeed = 0.3;
+		maxSpeed = 1.8;
 		fallSpeed = 0.2;
 		maxFallSpeed = 3.0;
 		
@@ -116,7 +116,7 @@ public class Slugger extends Enemy {
 	@Override
 	public void hit(int damage, boolean fromLeft) {
 		if (dead || flinching) return;	
-		this.addText("" + damage, x, y - 10, 1000, new Color(100 + (damage * 4), 255 - (damage * 6), 255 - (damage * 6)));
+		this.addText("" + damage, x, y - 10, 1000, new Color(235, 0, 0));
 		Sound.hit.play();
 		health -= damage;
 		if (health < 0) health = 0;
@@ -129,6 +129,11 @@ public class Slugger extends Enemy {
 		}
 		flinching = true;
 		flinchTimer = System.nanoTime();
+	}
+	
+	@Override
+	public boolean isDying() {
+		return dying;
 	}
 	
 	public void draw(Graphics2D g) {

@@ -49,7 +49,7 @@ public class MenuState extends GameState {
 		this.manager = manager;
 		this.panel = panel;
 		try {
-			bg = new Background("/Backgrounds/menu.png", 1);
+			bg = new Background("/Backgrounds/clouds.png", 1);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
 			bg.setScroll(-0.5, 0);
 
@@ -65,7 +65,7 @@ public class MenuState extends GameState {
 	}
 
 	public void init() {
-		Sound.music5.play(true);
+		Sound.music4.play(true);
 		setScale = panel.getScale();
 	}
 

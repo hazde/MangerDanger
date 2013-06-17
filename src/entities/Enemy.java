@@ -20,6 +20,9 @@ public class Enemy extends MapObject {
 	}
 	
 	public boolean isDead() {return dead;}
+	public boolean isDying() {
+		return false;
+	}
 	public int getDamage() {return damage;}
 	
 	public boolean getDiedFromFalling() {return diedFromFalling;}
