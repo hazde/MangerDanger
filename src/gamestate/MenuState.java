@@ -1,10 +1,11 @@
 package gamestate;
 
+import handlers.KeyHandler;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -49,7 +50,7 @@ public class MenuState extends GameState {
 		this.manager = manager;
 		this.panel = panel;
 		try {
-			bg = new Background("/Backgrounds/clouds.png", 1);
+			bg = new Background("/Backgrounds/clouds.png", 1, panel);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
 			bg.setScroll(-0.5, 0);
 
@@ -65,11 +66,13 @@ public class MenuState extends GameState {
 	}
 
 	public void init() {
-		Sound.music4.play(true);
+		Sound.music4.play(true);	
 		setScale = panel.getScale();
 	}
 
 	public void update() {
+		handleInput();
+		
 		bg.update();
 	}
 
@@ -78,7 +81,7 @@ public class MenuState extends GameState {
 		bg.draw(g);
 
 		// Rita en alltmer nyfiken mange beroende på menyvalen
-		g.drawImage(mange, (GamePanel.WIDTH - 370) + currentChoice * 45, 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+		g.drawImage(mange, (panel.getWindowWidth() - 370) + currentChoice * 45, 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
 
 		g.setFont(titleFont1);
 		g.setColor(Color.BLACK);
@@ -102,14 +105,14 @@ public class MenuState extends GameState {
 					g.setColor(Color.BLACK);
 					String str = options[i] + " - <" + setScale + ">";
 					Rectangle2D r = fm.getStringBounds(str, g);
-					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 271 + i * 20);
 					g.setColor(titleColor);
 					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 270 + i * 20);
 				} else {
 					g.setColor(Color.BLACK);
 					Rectangle2D r = fm.getStringBounds(options[i], g);
-					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 					g.drawString(options[i], x + 1, 271 + i * 20);
 					g.setColor(titleColor);
 					g.drawString(options[i], x, 270 + i * 20);
@@ -117,14 +120,14 @@ public class MenuState extends GameState {
 				
 			} else {
 				Rectangle2D r = fm.getStringBounds(options[i], g);
-				int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 				g.setColor(Color.BLACK);
 				g.drawString(options[i], x + 1, 271 + i * 20);
 				if (i == 2) {
-					g.setColor(Color.LIGHT_GRAY);
+					g.setColor(Color.DARK_GRAY);
 					g.drawString(options[i], x, 270 + i * 20);
 				} else {
-					g.setColor(Color.WHITE);
+					g.setColor(Color.LIGHT_GRAY);
 					g.drawString(options[i], x, 270 + i * 20);
 				}
 			}
@@ -138,7 +141,7 @@ public class MenuState extends GameState {
 			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": "");
 			Rectangle2D r = fm.getStringBounds(str, g);
 			int x = (int) (r.getWidth() / str.length() + 7);
-			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			int y = (panel.getWindowHeight()) - (int) r.getHeight();
 			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x + 1 , y);
 			g.setColor(Color.WHITE);
 			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x, y);
@@ -146,7 +149,7 @@ public class MenuState extends GameState {
 			g.setColor(Color.BLACK);
 			Rectangle2D r = fm.getStringBounds(description[currentChoice], g);
 			int x = (int) (r.getWidth() / description[currentChoice].length() + 7);
-			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			int y = (panel.getWindowHeight()) - (int) r.getHeight();
 			g.drawString(description[currentChoice], x + 1 , y);
 			g.setColor(Color.WHITE);
 			g.drawString(description[currentChoice], x, y);
@@ -154,20 +157,21 @@ public class MenuState extends GameState {
 
 
 	}
-
-	public void keyPressed(int k) {
-		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
+	
+	public void handleInput() {
+		if(KeyHandler.isPressed(KeyHandler.ESCAPE)) System.exit(0);
+		if(KeyHandler.isPressed(KeyHandler.ENTER) || KeyHandler.isPressed(KeyHandler.BUTTON_E)) {
 			select();
 		}
-
-		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
+		
+		if(KeyHandler.isPressed(KeyHandler.UP) || KeyHandler.isPressed(KeyHandler.BUTTON_W)) {
 			Sound.menu.play();
 			if (--currentChoice < 0) {
 				currentChoice = options.length - 1;
 			}
 		}
-
-		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
+		
+		if(KeyHandler.isPressed(KeyHandler.LEFT) || KeyHandler.isPressed(KeyHandler.BUTTON_A)) {
 			if (currentChoice == OPTIONS) {
 				if (setScale > 1) {
 					setScale--;
@@ -176,8 +180,8 @@ public class MenuState extends GameState {
 				}
 			}
 		}
-
-		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
+		
+		if(KeyHandler.isPressed(KeyHandler.RIGHT) || KeyHandler.isPressed(KeyHandler.BUTTON_D)) {
 			if (currentChoice == OPTIONS) {
 				if (setScale < 3) {
 					setScale++;
@@ -186,13 +190,38 @@ public class MenuState extends GameState {
 				}
 			}
 		}
-
-		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
+		
+		if(KeyHandler.isPressed(KeyHandler.DOWN) || KeyHandler.isPressed(KeyHandler.BUTTON_S)) {
 			Sound.menu.play();
 			if (++currentChoice == options.length) {
 				currentChoice = 0;
 			}
 		}
+		
+		
+	}
+	
+
+	public void keyPressed(int k) {
+//		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
+//			
+//		}
+//
+//		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
+//			
+//		}
+//
+//		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
+//			
+//		}
+//
+//		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
+//			
+//		}
+//
+//		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
+//			
+//		}
 	}
 
 	private void select() {

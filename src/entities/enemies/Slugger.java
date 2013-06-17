@@ -116,7 +116,7 @@ public class Slugger extends Enemy {
 	@Override
 	public void hit(int damage, boolean fromLeft) {
 		if (dead || flinching) return;	
-		this.addText("" + damage, x, y - 10, 1000, new Color(235, 0, 0));
+		this.addText("" + damage, x, y - 10, 1000, new Color(255, 137, 0));
 		Sound.hit.play();
 		health -= damage;
 		if (health < 0) health = 0;

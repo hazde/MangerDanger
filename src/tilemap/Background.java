@@ -14,12 +14,15 @@ public class Background {
 	private double dx;
 	private double dy;
 
+	private GamePanel panel;
+	
 	private double moveScale;
 
-	public Background(String path, double moveScale) {
+	public Background(String path, double moveScale, GamePanel panel) {
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(path));
 			this.moveScale = moveScale;
+			this.panel = panel;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -41,14 +44,15 @@ public class Background {
 	}
 
 	public void draw(Graphics2D g) {
-		g.drawImage(image, (int) x, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+//		System.out.println(GamePanel.WIDTH + " " + GamePanel.HEIGHT + " - " +  panel.getWindowWidth() + " " + panel.getWindowHeight());
+		g.drawImage(image, (int) x, (int) y, panel.getWindowWidth(), panel.getWindowHeight(), null);
 
 		if (x < 0) {
-			g.drawImage(image, (int) x + GamePanel.WIDTH, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+			g.drawImage(image, (int) x + panel.getWindowWidth(), (int) y, panel.getWindowWidth(), panel.getWindowHeight(), null);
 		}
 		
 		if (x > 0) {
-			g.drawImage(image, (int) x - GamePanel.WIDTH, (int) y, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+			g.drawImage(image, (int) x - panel.getWindowWidth(), (int) y, panel.getWindowWidth(), panel.getWindowHeight(), null);
 		}
 		
 		if ((x + image.getWidth()) < 0 || (x - image.getWidth() > 0)) {

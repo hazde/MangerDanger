@@ -13,6 +13,7 @@ import tilemap.TileMap;
 @SuppressWarnings("unused")
 public abstract class MapObject {
 	protected TileMap tilemap;
+//	protected GamePanel panel;
 	private ArrayList<FloatingText> floatText;
 	protected int tileSize;
 	protected double xMap;
@@ -79,6 +80,7 @@ public abstract class MapObject {
 
 	public MapObject(TileMap tm) {
 		tilemap = tm;
+
 		tileSize = tm.getTileSize();
 		intersected = false;
 		floatText = new ArrayList<FloatingText>();
@@ -116,7 +118,7 @@ public abstract class MapObject {
 	}
 
 	public Rectangle getRectangle() {
-		return new Rectangle((int)x - cWidth + 3, (int)y - cHeight, cWidth, cHeight);
+		return new Rectangle((int)x - cWidth, (int)y - cHeight, cWidth, cHeight);
 	}
 
 	public void calculateCorners(double x, double y) {
@@ -262,7 +264,9 @@ public abstract class MapObject {
 	public void setUp(boolean b) {up = b;}
 	public void setDown(boolean b) {down = b;}
 	public void setJumping(boolean b) {
-		if (!jumping && !falling && dy == 0) Sound.jump.play();
+		if (!jumping) {
+//			Sound.jump.play();
+		}
 		jumping = b;
 	}
 	public double getDX() {return dx;}
@@ -284,8 +288,6 @@ public abstract class MapObject {
 				long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 				if (elapsed / 50 % 2 == 0) {
 				} else {
-
-
 					if (facingRight) {
 						g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 4, null);
 					} else {
@@ -312,8 +314,8 @@ public abstract class MapObject {
 			//		g.drawRect((int) ((x + xMap) + standingTileRect.x), (int) ((y + standingTileRect.y) + yMap), standingTileRect.width, standingTileRect.height);
 
 			//		 rita ut hitboxar
-			//		Rectangle temp = this.getRectangle();
-			//		g.drawRect((int) (x + xMap - width / 2), (int) (y + yMap - height / 2) , (int) temp.getWidth(), (int) temp.getHeight());
+//					Rectangle temp = this.getRectangle();
+//					g.drawRect((int) (x + xMap - width / 2), (int) (y + yMap - height / 2) , (int) temp.getWidth(), (int) temp.getHeight());
 
 		}
 

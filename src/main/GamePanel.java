@@ -1,6 +1,7 @@
 package main;
 
 import gamestate.GameStateManager;
+import handlers.KeyHandler;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,7 +16,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-@SuppressWarnings("unused")
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private static final long serialVersionUID = 1L;
 	public static int GetScreenWorkingWidth() {
@@ -30,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 //	public static final int HEIGHT = 360;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 400;
+//	public static final int WIDTH = 320;
+//	public static final int HEIGHT = 240;
 	public static final int SCALE = 2;
 	public static final Dimension GAME_DIM = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
 	public static final String NAME =  "Manger Danger";
@@ -40,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private int frames = 0;
 	private int ticks = 0;
 	private int fps = 0;
+	private int tickCount = 0;
 	private int scale = 2;
 	public int actualWidth = 640;
 	public int actualHeight = 400;
@@ -92,6 +95,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	public void run() {
 		
+		init();	
 		
 		long lastTime = System.nanoTime();
 		double unprocessed = 0;
@@ -99,20 +103,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		
 		long lastTimer1 = System.currentTimeMillis();
 		
-		init();	
-		
 		while(running) {
 			
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
-			boolean shouldRender = false;
+			boolean shouldRender = true;
 //			System.out.println(unprocessed);
 			while (unprocessed >= 1) {
 				ticks++;
 				update();
 				unprocessed -= 1;
-				shouldRender = true;
+				shouldRender = false;
 			}
 			
 //			update();
@@ -123,7 +125,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			}
 			
 			try {
-				Thread.sleep(1);
+				Thread.sleep(4);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -132,6 +134,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 				lastTimer1 += 1000;
 //				System.out.println(ticks + " ticks, " + frames + " fps");
 				fps = frames;
+				tickCount = ticks;
 				frames = 0;
 				ticks = 0;
 			}
@@ -142,6 +145,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	
 	private void update() {
 		manager.update();
+		KeyHandler.update();
 	}
 	
 	private void draw() {
@@ -151,7 +155,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		g.setFont(new Font("Calibri", Font.PLAIN, 12));
 		g.setColor(Color.yellow);
 		String strFps = fps + " fps";
-		g.drawString(strFps, GamePanel.WIDTH - strFps.length() * 6, HEIGHT - 5);
+		g.drawString(strFps, GamePanel.WIDTH - 55, HEIGHT - 5);
+		String strTicks = "Ticks: " + tickCount;
+		g.drawString(strTicks, GamePanel.WIDTH - 55, HEIGHT - 15);
 		
 	}
 	
@@ -171,6 +177,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			this.setSize(actualWidth, actualHeight);
 			window.setSize(actualWidth, actualHeight);
 			window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			System.out.println(window.getWidth() + " " + window.getHeight());
 		} else {
 			window.setExtendedState(JFrame.NORMAL);
 			fullscreen = false;
@@ -191,7 +198,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	}
 
 	public int getWindowWidth() {
-		if (actualWidth == WIDTH * scale) {
+		if (actualWidth == WIDTH) {
 			return WIDTH;
 		} else {
 			return actualWidth / scale;
@@ -199,7 +206,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	}
 	
 	public int getWindowHeight() {
-		if (actualHeight == HEIGHT * scale) {
+		if (actualHeight == HEIGHT) {
 			return HEIGHT;
 		} else {
 			return actualHeight / scale;
@@ -207,11 +214,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	}
 	
 	public void keyPressed(KeyEvent key) {
-		manager.keyPressed(key.getKeyCode());
+		KeyHandler.keySet(key.getKeyCode(), true);
 	}
 
 	public void keyReleased(KeyEvent key) {
-		manager.keyReleased(key.getKeyCode());
+		KeyHandler.keySet(key.getKeyCode(), false);
 	}
 
 	public void keyTyped(KeyEvent arg0) {

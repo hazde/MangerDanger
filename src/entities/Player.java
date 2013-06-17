@@ -29,8 +29,6 @@ public class Player extends MapObject {
 	private int maxFire;
 
 	private boolean dead;
-	private boolean flinching;
-	private long flinchTimer;
 
 	private boolean peeing;
 	private boolean throwingPeeball;
@@ -86,9 +84,9 @@ public class Player extends MapObject {
 		moveSpeed = 0.2;
 		maxSpeed = 1.9;
 		stopSpeed = 0.3;
-		fallSpeed = 0.09;
-		maxFallSpeed = 4.2;
-		jumpStart = -4.2;
+		fallSpeed = 0.13;
+		maxFallSpeed = 8.2;
+		jumpStart = -5.2;
 		stopJumpSpeed = 0.2;
 
 		throwingPeeball = false;
@@ -113,8 +111,8 @@ public class Player extends MapObject {
 		pee = maxPee = 25000;
 
 		peeCost = 30;
-		peeDamage = 2;
-		peeBallDamage = 7;
+		peeDamage = 5;
+		peeBallDamage = 18;
 		peeList = new ArrayList<Pee>();
 		peeballs = new ArrayList<PeeBall>();
 		pbTrajectory =  new PeeBallTrajectory(tilemap, facingRight, this);
@@ -382,12 +380,12 @@ public class Player extends MapObject {
 
 
 		// draw player
-		if (flinching) {
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed / 100 % 2 == 0) {
-				return;
-			}
-		}
+//		if (flinching) {
+//			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+//			if (elapsed / 100 % 2 == 0) {
+//				return;
+//			}
+//		}
 
 		super.draw(g);
 
@@ -459,14 +457,8 @@ public class Player extends MapObject {
 
 	public void hit(int damage) {
 		if (flinching) return;
+		addText("" + damage, x, y - 10, 600, new Color(255, 0, 0));
 		health -= damage;
-		//		if (facingRight){
-		//			dx = -6.0;
-		//		} else {
-		//			dx = 6.0;
-		//		}
-		//		
-		//		dy = -4.0;
 		if (health < 0) health = 0;
 		if (health == 0) dead = true;
 		flinching = true;
@@ -579,6 +571,7 @@ public class Player extends MapObject {
 	public void addBeer(int amount) {
 		if (pee == maxPee) return;
 		pee += amount;
+		this.addText("+25 beer", x, y - 10, 1700,  new Color(125, 255, 109), 0.13, true);
 	}
 
 

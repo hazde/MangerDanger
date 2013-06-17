@@ -59,8 +59,18 @@ public class Sound {
         	return clips[p].isRunning();
         }
         
+        public void setPosition(int position) {
+        	clips[p].setFramePosition(position);
+        	clips[p].start();
+        	p++;
+            if (p>=count) p = 0;
+        }
+        
+        public int getFrames() {
+        	return clips[p].getFrameLength();
+        }
+        
     }
-    public static Clips music = load("/Sounds/Music/music1.wav", 1);
     public static Clips music2 = load("/Sounds/Music/music2.wav", 1);
     public static Clips music3 = load("/Sounds/Music/funkymusic.wav", 1);
     public static Clips music4 = load("/Sounds/Music/music3.wav", 1);
@@ -97,7 +107,6 @@ public class Sound {
     }
     
     public static void stopAllMusic() {
-    	music.stop();
     	music2.stop();
     	music3.stop();
     	music4.stop();
@@ -107,8 +116,16 @@ public class Sound {
     	deathscreen3.stop();
     }
     
+    public static void setPosition(Clips clip, int position) {
+    	clip.setPosition(position);
+    }
+    
     public static boolean isPlaying(Clips clip) {
     	return clip.isPlaying();
+    }
+    
+    public static int getFrames(Clips clip) {
+    	return clip.getFrames();
     }
 
     public static void touch() {

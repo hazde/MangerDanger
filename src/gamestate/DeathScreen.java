@@ -1,5 +1,7 @@
 package gamestate;
 
+import handlers.KeyHandler;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -49,7 +51,7 @@ public class DeathScreen extends GameState {
 		this.panel = panel;
 
 		try {
-			bg = new Background("/Backgrounds/clouds.png", 1);
+			bg = new Background("/Backgrounds/clouds.png", 1, panel);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange2.png"));
 			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death2.png"));
 			bg.setScroll(-0.5, 0);
@@ -75,6 +77,7 @@ public class DeathScreen extends GameState {
 	}
 
 	public void update() {
+		handleInput();
 		//		bg.update();
 	}
 
@@ -82,19 +85,19 @@ public class DeathScreen extends GameState {
 		// Rita bakgrundsbilden
 
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+		g.fillRect(0, 0, panel.getWindowWidth(), panel.getWindowHeight());
 
 		// Rita en alltmer nyfiken mange beroende på menyvalen
 
 		if (!runOnce) {
 			if (!mangeFlip) {
-				if (waitCounter > 500) {
-				mangeX -= 0.3;
+				if (waitCounter > 2500) {
+				mangeX -= 0.2;
 				} else {
 					waitCounter++;
 				}
 			} else {
-				mangeX += 0.3;
+				mangeX += 0.2;
 			}
 
 			if (mangeX <= 0) {
@@ -105,7 +108,7 @@ public class DeathScreen extends GameState {
 			}
 		}
 
-		g.drawImage(mange, (int) (GamePanel.WIDTH - mangeX), 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+		g.drawImage(mange, (int) (panel.getWindowWidth() - mangeX), 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
 		g.drawImage(death, 30, 30, null);
 		//		g.setFont(titleFont1);
 		//		g.setColor(titleColor);
@@ -126,14 +129,14 @@ public class DeathScreen extends GameState {
 				if (currentChoice == OPTIONS) {
 					String str = options[i] + " - <" + setScale + ">";
 					Rectangle2D r = fm.getStringBounds(str, g);
-					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 					g.setColor(Color.BLACK);
 					g.drawString(options[i] + " - <" + setScale + ">", x , 271 + i * 20);
 					g.setColor(titleColor);
 					g.drawString(options[i] + " - <" + setScale + ">", x, 270 + i * 20);
 				} else {
 					Rectangle2D r = fm.getStringBounds(options[i], g);
-					int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 					g.setColor(Color.BLACK);
 					g.drawString(options[i], x, 271 + i * 20);
 					g.setColor(titleColor);
@@ -142,7 +145,7 @@ public class DeathScreen extends GameState {
 
 			} else {
 				Rectangle2D r = fm.getStringBounds(options[i], g);
-				int x = (GamePanel.WIDTH - (int) r.getWidth()) / 2;
+				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
 				g.setColor(Color.BLACK);
 				g.drawString(options[i], x, 271 + i * 20);
 
@@ -160,7 +163,7 @@ public class DeathScreen extends GameState {
 			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": "");
 			Rectangle2D r = fm.getStringBounds(str, g);
 			int x = (int) (r.getWidth() / str.length() + 7);
-			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			int y = (panel.getWindowHeight()) - (int) r.getHeight();
 			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x + 1 , y);
 			g.setColor(Color.WHITE);
 			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x, y);
@@ -168,7 +171,7 @@ public class DeathScreen extends GameState {
 			g.setColor(Color.BLACK);
 			Rectangle2D r = fm.getStringBounds(description[currentChoice], g);
 			int x = (int) (r.getWidth() / description[currentChoice].length() + 7);
-			int y = (GamePanel.HEIGHT) - (int) r.getHeight();
+			int y = (panel.getWindowHeight()) - (int) r.getHeight();
 			g.drawString(description[currentChoice], x + 1 , y);
 			g.setColor(Color.WHITE);
 			g.drawString(description[currentChoice], x, y);
@@ -177,19 +180,20 @@ public class DeathScreen extends GameState {
 
 	}
 
-	public void keyPressed(int k) {
-		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
+	public void handleInput() {
+		if(KeyHandler.isPressed(KeyHandler.ESCAPE)) System.exit(0);
+		if(KeyHandler.isPressed(KeyHandler.ENTER) || KeyHandler.isPressed(KeyHandler.BUTTON_E)) {
 			select();
 		}
-
-		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
+		
+		if(KeyHandler.isPressed(KeyHandler.UP) || KeyHandler.isPressed(KeyHandler.BUTTON_W)) {
 			Sound.menu.play();
 			if (--currentChoice < 0) {
 				currentChoice = options.length - 1;
 			}
 		}
-
-		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
+		
+		if(KeyHandler.isPressed(KeyHandler.LEFT) || KeyHandler.isPressed(KeyHandler.BUTTON_A)) {
 			if (currentChoice == OPTIONS) {
 				if (setScale > 1) {
 					setScale--;
@@ -198,8 +202,8 @@ public class DeathScreen extends GameState {
 				}
 			}
 		}
-
-		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
+		
+		if(KeyHandler.isPressed(KeyHandler.RIGHT) || KeyHandler.isPressed(KeyHandler.BUTTON_D)) {
 			if (currentChoice == OPTIONS) {
 				if (setScale < 3) {
 					setScale++;
@@ -208,21 +212,63 @@ public class DeathScreen extends GameState {
 				}
 			}
 		}
-
-		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
+		
+		if(KeyHandler.isPressed(KeyHandler.DOWN) || KeyHandler.isPressed(KeyHandler.BUTTON_S)) {
 			Sound.menu.play();
 			if (++currentChoice == options.length) {
 				currentChoice = 0;
 			}
 		}
+		
+		
+	}
+	
+	public void keyPressed(int k) {
+//		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
+//			select();
+//		}
+//
+//		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
+//			Sound.menu.play();
+//			if (--currentChoice < 0) {
+//				currentChoice = options.length - 1;
+//			}
+//		}
+//
+//		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
+//			if (currentChoice == OPTIONS) {
+//				if (setScale > 1) {
+//					setScale--;
+//					Sound.menu.play();
+//					panel.setScale(setScale);
+//				}
+//			}
+//		}
+//
+//		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
+//			if (currentChoice == OPTIONS) {
+//				if (setScale < 3) {
+//					setScale++;
+//					Sound.menu.play();
+//					panel.setScale(setScale);
+//				}
+//			}
+//		}
+//
+//		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
+//			Sound.menu.play();
+//			if (++currentChoice == options.length) {
+//				currentChoice = 0;
+//			}
+//		}
 	}
 
 	private void select() {
 		switch (currentChoice) {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
-			Sound.music4.stop();
-			Sound.music2.play(true);
+//			Sound.music4.stop();
+//			Sound.music2.play(true);
 			break;
 		case OPTIONS:
 

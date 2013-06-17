@@ -80,9 +80,9 @@ public class TileMap {
 		try {
 			InputStream in = getClass().getResourceAsStream(s);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-			numCols = Integer.parseInt(br.readLine());
-			numRows = Integer.parseInt(br.readLine());
+			numCols = Integer.parseInt(br.readLine().trim());
+			numRows = Integer.parseInt(br.readLine().trim());
+			System.out.println(numCols + " " + numRows);
 			map = new int[numRows][numCols];
 			width = numCols * tileSize;
 			height = numRows * tileSize;
@@ -94,7 +94,7 @@ public class TileMap {
 
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
-				String line = br.readLine();
+				String line = br.readLine().trim();
 				String[] tokens = line.split(delims);
 				for (int col = 0; col < numCols; col++) {
 					if (tokens[col].equals("sp")) {
@@ -142,7 +142,6 @@ public class TileMap {
 
 	public int getType(int row, int col) {
 		try {
-			
 			int rc = map[row][col];
 			int r = rc / numTilesAcross;
 			int c = rc % numTilesAcross;
