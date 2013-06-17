@@ -6,11 +6,13 @@ import handlers.KeyHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -85,10 +87,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private void init() {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		g = (Graphics2D) image.getGraphics();
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		g.setColor(Color.WHITE);
-		g.drawString("LOADING...", WIDTH / 2 - 50, HEIGHT / 2);
 		running = true;
 		manager = new GameStateManager(this);
 	}
@@ -125,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			}
 			
 			try {
-				Thread.sleep(4);
+				Thread.sleep(2);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -152,18 +150,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		manager.draw(g);
 		
 		// fpsutskrift
+		FontMetrics fm = g.getFontMetrics();
+		String strFps = fps + " fps";
+		Rectangle2D r = fm.getStringBounds(strFps, g);
 		g.setFont(new Font("Calibri", Font.PLAIN, 12));
 		g.setColor(Color.yellow);
-		String strFps = fps + " fps";
-		g.drawString(strFps, GamePanel.WIDTH - 55, HEIGHT - 5);
+		
+		g.drawString(strFps, getWindowWidth() - (int) r.getWidth() - 10, getWindowHeight() - (int) r.getHeight());
 		String strTicks = "Ticks: " + tickCount;
-		g.drawString(strTicks, GamePanel.WIDTH - 55, HEIGHT - 15);
+		r = fm.getStringBounds(strTicks, g);
+		g.drawString(strTicks, getWindowWidth() - (int) r.getWidth() - 10, getWindowHeight() - (int) r.getHeight() - 10);
 		
 	}
 	
 	private void drawToScreen() {
 		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0, WIDTH * scale, HEIGHT * scale, null);
+		g2.drawImage(image, 0, 0, getWindowWidth() * scale, getWindowHeight() * scale, null);
 		g2.dispose();
 	}
 	
@@ -176,8 +178,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			actualHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 			this.setSize(actualWidth, actualHeight);
 			window.setSize(actualWidth, actualHeight);
-			window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-			System.out.println(window.getWidth() + " " + window.getHeight());
+//			window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			image = new BufferedImage(actualWidth / scale, actualHeight / scale, BufferedImage.TYPE_INT_RGB);
+			g = (Graphics2D) image.getGraphics();
+			System.out.println(this.getWidth() + " " + this.getHeight() + ", " + window.getWidth() + " " + window.getHeight());
 		} else {
 			window.setExtendedState(JFrame.NORMAL);
 			fullscreen = false;
@@ -185,6 +189,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			actualHeight = HEIGHT * scale;
 			this.setSize(WIDTH * scale, HEIGHT * scale);
 			window.setSize(WIDTH * scale, HEIGHT * scale);
+			image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+			g = (Graphics2D) image.getGraphics();
 		}
 		window.setLocationRelativeTo(null);
 	}

@@ -29,8 +29,8 @@ public class Background {
 	}
 
 	public void setPosition(double x, double y) {
-		this.x = (x * moveScale) % GamePanel.WIDTH;
-		this.y = (y * moveScale) % GamePanel.HEIGHT;
+		this.x = (x * moveScale) % panel.getWindowWidth();
+		this.y = (y * moveScale) % panel.getWindowHeight();
 	}
 
 	public void setScroll(double dx, double dy) {

@@ -66,7 +66,7 @@ public class MenuState extends GameState {
 	}
 
 	public void init() {
-		Sound.music4.play(true);	
+		Sound.music4.play(true);
 		setScale = panel.getScale();
 	}
 
@@ -78,10 +78,13 @@ public class MenuState extends GameState {
 
 	public void draw(Graphics2D g) {
 		// Rita bakgrundsbilden
-		bg.draw(g);
+//		bg.draw(g);
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, panel.getWindowWidth(), panel.getWindowHeight());
 
 		// Rita en alltmer nyfiken mange beroende på menyvalen
-		g.drawImage(mange, (panel.getWindowWidth() - 370) + currentChoice * 45, 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
+		g.drawImage(mange, (panel.getWindowWidth() - (panel.getWindowWidth() - 270)) + currentChoice * 45, 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
 
 		g.setFont(titleFont1);
 		g.setColor(Color.BLACK);
@@ -99,36 +102,37 @@ public class MenuState extends GameState {
 		// Rita ut menyvalen
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
+		int ty = panel.getWindowHeight() / 2;
 		for (int i = 0; i < options.length; i++) {
 			if (i ==  currentChoice) {
 				if (currentChoice == OPTIONS) {
 					g.setColor(Color.BLACK);
 					String str = options[i] + " - <" + setScale + ">";
 					Rectangle2D r = fm.getStringBounds(str, g);
-					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
-					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 271 + i * 20);
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
+					g.drawString(options[i] + " - <" + setScale + ">", x + 1, (ty + 1) + i * 20);
 					g.setColor(titleColor);
-					g.drawString(options[i] + " - <" + setScale + ">", x + 1, 270 + i * 20);
+					g.drawString(options[i] + " - <" + setScale + ">", x + 1, ty + i * 20);
 				} else {
 					g.setColor(Color.BLACK);
 					Rectangle2D r = fm.getStringBounds(options[i], g);
-					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
-					g.drawString(options[i], x + 1, 271 + i * 20);
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
+					g.drawString(options[i], x + 1, (ty + 1) + i * 20);
 					g.setColor(titleColor);
-					g.drawString(options[i], x, 270 + i * 20);
+					g.drawString(options[i], x, ty + i * 20);
 				}
 				
 			} else {
 				Rectangle2D r = fm.getStringBounds(options[i], g);
-				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
+				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
 				g.setColor(Color.BLACK);
-				g.drawString(options[i], x + 1, 271 + i * 20);
+				g.drawString(options[i], x + 1, (ty + 1) + i * 20);
 				if (i == 2) {
 					g.setColor(Color.DARK_GRAY);
-					g.drawString(options[i], x, 270 + i * 20);
+					g.drawString(options[i], x, ty + i * 20);
 				} else {
 					g.setColor(Color.LIGHT_GRAY);
-					g.drawString(options[i], x, 270 + i * 20);
+					g.drawString(options[i], x, ty + i * 20);
 				}
 			}
 

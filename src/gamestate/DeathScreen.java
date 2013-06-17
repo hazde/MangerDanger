@@ -124,33 +124,34 @@ public class DeathScreen extends GameState {
 
 
 		FontMetrics fm = g.getFontMetrics();
+		int ty = panel.getWindowHeight() / 2;
 		for (int i = 0; i < options.length; i++) {
 			if (i ==  currentChoice) {
 				if (currentChoice == OPTIONS) {
 					String str = options[i] + " - <" + setScale + ">";
 					Rectangle2D r = fm.getStringBounds(str, g);
-					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
 					g.setColor(Color.BLACK);
-					g.drawString(options[i] + " - <" + setScale + ">", x , 271 + i * 20);
+					g.drawString(options[i] + " - <" + setScale + ">", x , (ty + 1) + i * 20);
 					g.setColor(titleColor);
-					g.drawString(options[i] + " - <" + setScale + ">", x, 270 + i * 20);
+					g.drawString(options[i] + " - <" + setScale + ">", x, ty + i * 20);
 				} else {
 					Rectangle2D r = fm.getStringBounds(options[i], g);
-					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
+					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
 					g.setColor(Color.BLACK);
-					g.drawString(options[i], x, 271 + i * 20);
+					g.drawString(options[i], x, (ty + 1) + i * 20);
 					g.setColor(titleColor);
-					g.drawString(options[i], x, 270 + i * 20);
+					g.drawString(options[i], x, ty + i * 20);
 				}
 
 			} else {
 				Rectangle2D r = fm.getStringBounds(options[i], g);
-				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 2;
+				int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
 				g.setColor(Color.BLACK);
-				g.drawString(options[i], x, 271 + i * 20);
+				g.drawString(options[i], x, (ty + 1) + i * 20);
 
 				g.setColor(Color.WHITE);
-				g.drawString(options[i], x, 270 + i * 20);
+				g.drawString(options[i], x, ty + i * 20);
 
 			}
 
@@ -267,8 +268,8 @@ public class DeathScreen extends GameState {
 		switch (currentChoice) {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
-//			Sound.music4.stop();
-//			Sound.music2.play(true);
+			Sound.music4.stop();
+			Sound.music2.play(true);
 			break;
 		case OPTIONS:
 

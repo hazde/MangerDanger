@@ -55,7 +55,7 @@ public class Level1State extends Level {
 	}
 
 	public void init() {
-		tilemap = new TileMap(30);
+		tilemap = new TileMap(30, panel);
 		tilemap.loadTiles("/Tilesets/grasstileset3.png");
 		tilemap.loadMap("/Maps/level1-5.map");
 		tilemap.setPosition(0, 0);
@@ -74,7 +74,7 @@ public class Level1State extends Level {
 		enemies = new ArrayList<Enemy>();
 		
 		lightmap = false;
-		hud = new HUD(player);
+		hud = new HUD(player, panel);
 		
 		eventStart = true;
 		tb = new ArrayList<Rectangle>();
@@ -86,8 +86,6 @@ public class Level1State extends Level {
 		Slugger[] s = new Slugger[25];
 		for (int i = 0; i < s.length; i++) {
 			s[i] = new Slugger(tilemap);
-
-			//			s[i].setPosition(50 + (i * 20) , 100);
 			s[i].setPosition((new Random().nextInt(2000) + 150) , 100);
 			getEnemies().add(s[i]);
 		}

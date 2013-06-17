@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 
 public class TileMap {
+	private GamePanel panel;
+	
 	// pos
 	private double x;
 	private double y;
@@ -45,10 +47,11 @@ public class TileMap {
 	private int numRowsToDraw;
 	private int numColsToDraw;
 
-	public TileMap(int tileSize) {
+	public TileMap(int tileSize, GamePanel panel) {
+		this.panel = panel;
 		this.tileSize = tileSize;
-		numRowsToDraw = GamePanel.HEIGHT / tileSize + 2;
-		numColsToDraw = GamePanel.WIDTH  / tileSize  + 2;
+		numRowsToDraw = panel.getWindowHeight() / tileSize + 5;
+		numColsToDraw = panel.getWindowWidth()  / tileSize  + 5;
 		smoothCentering = 0.07;
 		spawnPointX = 100;
 		spawnPointY = 100;
@@ -87,9 +90,9 @@ public class TileMap {
 			width = numCols * tileSize;
 			height = numRows * tileSize;
 
-			xMin = GamePanel.WIDTH - width;
+			xMin = panel.getWindowWidth() - width;
 			xMax = 0;
-			yMin = GamePanel.HEIGHT - height;
+			yMin = panel.getWindowHeight() - height;
 			yMax = 0;
 
 			String delims = "\\s+";
@@ -168,6 +171,9 @@ public class TileMap {
 	}
 
 	public void setPosition(double x, double y) {
+		xMin = panel.getWindowWidth() - width;
+		yMin = panel.getWindowHeight() - height;
+		
 		this.x += (x - this.x) * smoothCentering;
 		this.y += (y - this.y) * smoothCentering;
 		fixBounds();
@@ -177,6 +183,7 @@ public class TileMap {
 	}
 
 	private void fixBounds() {
+		
 		if (x < xMin) x = xMin;
 		if (x > xMax) x = xMax;
 		if (y < yMin) y = yMin;
