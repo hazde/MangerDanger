@@ -24,8 +24,6 @@ public class Sound {
         public void play() {
             if (clips==null) return;
             
-            
-            
             clips[p].stop();
             clips[p].setFramePosition(0);
             clips[p].start();
@@ -59,6 +57,11 @@ public class Sound {
         	return clips[p].isRunning();
         }
         
+        public void setVolume(float volume) {
+        	FloatControl gainControl = (FloatControl) clips[p].getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(volume);
+        }
+        
         public void setPosition(int position) {
         	clips[p].setFramePosition(position);
         	clips[p].start();
@@ -83,6 +86,16 @@ public class Sound {
     public static Clips death = load("/Sounds/death.wav", 4);
     public static Clips jump = load("/Sounds/jump.wav", 1);
     public static Clips ballon = load("/Sounds/peeballon.wav", 1);
+    
+    public static float DECREASE_5DB = -5.0f;
+    public static float DECREASE_10DB = -10.0f;
+    public static float DECREASE_15DB = -15.0f;
+    public static float DECREASE_20DB = -20.0f;
+    
+    public static float INCREASE_5DB = 5.0f;
+    public static float INCREASE_10DB = 10.0f;
+    public static float INCREASE_15DB = 15.0f;
+    public static float INCREASE_20DB = 20.0f;
 
     private static Clips load(String name, int count) {
         try {
@@ -126,6 +139,10 @@ public class Sound {
     
     public static int getFrames(Clips clip) {
     	return clip.getFrames();
+    }
+    
+    public static void setVolume(Clips clip, float volume) {
+    	clip.setVolume(volume);
     }
 
     public static void touch() {

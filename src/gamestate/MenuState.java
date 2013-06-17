@@ -233,7 +233,9 @@ public class MenuState extends GameState {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
 			Sound.stopAllMusic();
+			Sound.setVolume(Sound.music2, Sound.DECREASE_15DB);
 			Sound.music2.play(true);
+			
 			break;
 		case OPTIONS:
 
