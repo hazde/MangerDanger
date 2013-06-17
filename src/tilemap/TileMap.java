@@ -1,5 +1,6 @@
 package tilemap;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -10,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 
+@SuppressWarnings("unused")
 public class TileMap {
 	private GamePanel panel;
 	
@@ -37,6 +39,7 @@ public class TileMap {
 
 	// tileset
 	private BufferedImage tileset;
+	private BufferedImage renderedMap;
 	private int numTilesAcross;
 	private int numTilesVertical;
 	private Tile[][] tiles;
@@ -89,6 +92,8 @@ public class TileMap {
 			map = new int[numRows][numCols];
 			width = numCols * tileSize;
 			height = numRows * tileSize;
+			
+			renderedMap = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 			xMin = panel.getWindowWidth() - width;
 			xMax = 0;
@@ -109,7 +114,7 @@ public class TileMap {
 					}
 				}
 			}
-
+//			paintImage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -189,7 +194,28 @@ public class TileMap {
 		if (y < yMin) y = yMin;
 		if (y > yMax) y = yMax;
 	}
+	
+	private void paintImage() {
+		Graphics2D g = renderedMap.createGraphics();
+		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) {
+			if (row >= numRows) break;
+			for (int col = colOffset; col < colOffset + numColsToDraw; col++) {
+				if (col >= numCols) break;
+				if (map[row][col] == 0) continue;
+				int rc = map[row][col];
+				int r = rc / numTilesAcross;
+				int c = rc % numTilesAcross;
+				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize, null);
+			}
+		}
+	}
 
+//	public void draw(Graphics2D g) {
+//		System.out.println(x + " " + y);
+//		g.setXORMode(new Color(0,0,0));
+//		g.drawImage(renderedMap, 0, 0, panel.getWindowWidth(), panel.getWindowHeight(), 0, 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
+//	}
+	
 	public void draw(Graphics2D g) {
 		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) {
 			if (row >= numRows) break;

@@ -29,6 +29,7 @@ public class PeeBall extends MapObject {
 		moveSpeedY = -0.36;
 		ballFallSpeed = 0.15  + player.fallSpeed;
 		initialYSpeed = -2.1;
+		
 		if (right) dx = moveSpeed;
 		else dx = -moveSpeed;
 		dy = initialYSpeed;
@@ -40,8 +41,8 @@ public class PeeBall extends MapObject {
 		width = 10;
 		height = 10;
 		
-		cWidth = 2;
-		cHeight = 2;
+		cWidth = 10;
+		cHeight = 10;
 		
 		
 		try {

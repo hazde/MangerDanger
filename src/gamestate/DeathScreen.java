@@ -110,14 +110,6 @@ public class DeathScreen extends GameState {
 
 		g.drawImage(mange, (int) (panel.getWindowWidth() - mangeX), 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
 		g.drawImage(death, 30, 30, null);
-		//		g.setFont(titleFont1);
-		//		g.setColor(titleColor);
-		//		g.drawString(title1, 30, 60);
-		//
-		//		g.setFont(titleFont2);
-		//		g.setColor(titleColor);
-		//		g.drawString(title2, 40, 100);
-
 
 		// Rita ut menyvalen
 		g.setFont(font);
@@ -225,43 +217,7 @@ public class DeathScreen extends GameState {
 	}
 	
 	public void keyPressed(int k) {
-//		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
-//			select();
-//		}
-//
-//		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
-//			Sound.menu.play();
-//			if (--currentChoice < 0) {
-//				currentChoice = options.length - 1;
-//			}
-//		}
-//
-//		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
-//			if (currentChoice == OPTIONS) {
-//				if (setScale > 1) {
-//					setScale--;
-//					Sound.menu.play();
-//					panel.setScale(setScale);
-//				}
-//			}
-//		}
-//
-//		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
-//			if (currentChoice == OPTIONS) {
-//				if (setScale < 3) {
-//					setScale++;
-//					Sound.menu.play();
-//					panel.setScale(setScale);
-//				}
-//			}
-//		}
-//
-//		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
-//			Sound.menu.play();
-//			if (++currentChoice == options.length) {
-//				currentChoice = 0;
-//			}
-//		}
+
 	}
 
 	private void select() {

@@ -41,7 +41,8 @@ public abstract class MapObject {
 	protected double xTemp;
 	protected double yTemp;
 	protected boolean intersected;
-
+	protected boolean bIntersects = false;
+	
 	protected boolean topLeft;
 	protected boolean topRight;
 	protected boolean bottomLeft;
@@ -96,7 +97,16 @@ public abstract class MapObject {
 		//		} else if (r1.intersects(r2) && intersected) {
 		//			return false;
 		//		}
+//		bIntersects = r1.intersects(r2);
 		return r1.intersects(r2);
+	}
+	
+	public boolean contains(double x, double y) {
+		Rectangle r1 = getRectangle();
+		if (r1.contains(x, y)) {
+			return true;
+		}
+		return false;
 	}
 
 	public void addText(String text, double x, double y, int duration, Color color) {
@@ -118,7 +128,7 @@ public abstract class MapObject {
 	}
 
 	public Rectangle getRectangle() {
-		return new Rectangle((int)x - cWidth, (int)y - cHeight, cWidth, cHeight);
+		return new Rectangle((int)x - (cWidth / 2), (int)y - (cHeight / 2) - 1, cWidth, cHeight);
 	}
 
 	public void calculateCorners(double x, double y) {
@@ -146,7 +156,7 @@ public abstract class MapObject {
 		int br = tilemap.getType(bottomTile, rightTile);
 
 		//		System.out.println("XY: " + (leftTile * tileSize) + ", " + (bottomTile * tileSize) +  " - " + (leftTile + rightTile) / 2 + " cHeight: " + cHeight + ", cWidth: " + cWidth);
-		standingOnTile = tilemap.getType(bottomTile, (leftTile + rightTile) / 2);
+		standingOnTile = tilemap.getType(bottomTile, ((int) x) / tileSize);
 		//		standingTileRect.x = leftTile + rightTile;
 		//		standingTileRect.y = (bottomTile);
 
@@ -301,6 +311,12 @@ public abstract class MapObject {
 					g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 4, -width, height, null);
 				}
 			}
+			
+			
+			// rita ut en pixel som visar positionen för objektets fötter
+//			g.setColor(Color.RED);
+//			g.fillRect((int) (x + xMap), (int) (y + yMap) + (cHeight / 2), 1, 1);
+			
 		}
 			for (int i = 0; i < floatText.size(); i++) {
 				floatText.get(i).draw(g);
@@ -309,13 +325,18 @@ public abstract class MapObject {
 					i--;
 				}
 			}
+			
+			
+			// rita ut hitboxar
+//			Rectangle temp = this.getRectangle();
+//			
+//			if (bIntersects) {
+//				g.setColor(Color.RED);
+//			} else {
+//				g.setColor(Color.WHITE);
+//			}
+//			g.drawRect((int) ((x + xMap) - (temp.getWidth() / 2)), (int) ((y + yMap) - (temp.getHeight() / 2)) - 1, (int) temp.getWidth(), (int) temp.getHeight());
 
-			//		g.setColor(Color.YELLOW);
-			//		g.drawRect((int) ((x + xMap) + standingTileRect.x), (int) ((y + standingTileRect.y) + yMap), standingTileRect.width, standingTileRect.height);
-
-			//		 rita ut hitboxar
-//					Rectangle temp = this.getRectangle();
-//					g.drawRect((int) (x + xMap - width / 2), (int) (y + yMap - height / 2) , (int) temp.getWidth(), (int) temp.getHeight());
 
 		}
 

@@ -21,13 +21,13 @@ public class Slugger extends Enemy {
 	public Slugger(TileMap tm) {
 		super(tm);
 		moveSpeed = 0.3;
-		maxSpeed = 1.8;
+		maxSpeed = 2.3;
 		fallSpeed = 0.2;
 		maxFallSpeed = 3.0;
 		
 		width = 30;
 		height = 30;
-		cWidth = 20;
+		cWidth = 18;
 		cHeight = 20;
 		
 		health = maxHealth = 50;

@@ -61,7 +61,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		setPreferredSize(GAME_DIM);
 		setFocusable(true);
 		requestFocus();
-		
 	}
 	
 	public void showWindow() {
@@ -77,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	
 	public void addNotify() {
 		super.addNotify();
+		init();
 		if (thread == null) {
 			thread = new Thread(this);
 			addKeyListener(this);
@@ -87,13 +87,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private void init() {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		g = (Graphics2D) image.getGraphics();
+//		g.setColor(Color.BLACK);
+//		g.fillRect(0, 0, getWindowWidth(), getWindowHeight());
+//		g.setColor(Color.WHITE);
+//		g.drawString("Loading...", getWindowWidth() / 2 - 20, getWindowHeight() / 2);
 		running = true;
 		manager = new GameStateManager(this);
 	}
 
 	public void run() {
 		
-		init();	
+//		init();	
 		
 		long lastTime = System.nanoTime();
 		double unprocessed = 0;
@@ -123,7 +127,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			}
 			
 			try {
-				Thread.sleep(2);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -178,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			actualHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 			this.setSize(actualWidth, actualHeight);
 			window.setSize(actualWidth, actualHeight);
-//			window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			image = new BufferedImage(actualWidth / scale, actualHeight / scale, BufferedImage.TYPE_INT_RGB);
 			g = (Graphics2D) image.getGraphics();
 			System.out.println(this.getWidth() + " " + this.getHeight() + ", " + window.getWidth() + " " + window.getHeight());

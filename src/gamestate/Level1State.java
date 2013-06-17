@@ -72,6 +72,7 @@ public class Level1State extends Level {
 		player = new Player(tilemap);
 		player.setPosition(tilemap.getSpawnPointX() + (player.getWidth() / 2), tilemap.getSpawnPointY());
 		enemies = new ArrayList<Enemy>();
+		player.init(enemies);
 		
 		lightmap = false;
 		hud = new HUD(player, panel);
@@ -106,7 +107,9 @@ public class Level1State extends Level {
 		}
 
 		bg.update();
+		
 		player.update();
+		
 		if (tilemap.getHeight() > GamePanel.HEIGHT) {
 		tilemap.setPosition(GamePanel.WIDTH / 2  - player.getX(), GamePanel.HEIGHT / 3 - player.getY() - 22);
 		} else {
@@ -115,23 +118,21 @@ public class Level1State extends Level {
 
 
 
-		//		bg.setPosition(tilemap.getX(), tilemap.getY());
-
-		player.checkAttack(getEnemies());
-
-		ArrayList<Enemy> toRemove = new ArrayList<Enemy>();
+		//	bg.setPosition(tilemap.getX(), tilemap.getY());
 		for (int i = 0; i < getEnemies().size(); i++) {
 			getEnemies().get(i).update();
 		}
+		
 	}
 
 	public void draw(Graphics2D g) {
-		bg.draw(g);
+		
 
 		// draw tilemap
-
+		
+		bg.draw(g);
 		tilemap.draw(g);
-
+		
 
 
 
@@ -217,18 +218,45 @@ public class Level1State extends Level {
 		player.setLeft(KeyHandler.keyState[KeyHandler.LEFT]);
 		player.setDown(KeyHandler.keyState[KeyHandler.DOWN]);
 		player.setRight(KeyHandler.keyState[KeyHandler.RIGHT]);
-		if (player.isJumping() || player.isFalling()) {
-			player.setGliding(KeyHandler.keyState[KeyHandler.UP]);
+		
+		if (player.isPeeing() && !player.isJumping() && !player.isFalling() && !player.isMoving()) {
+			boolean peeUp = KeyHandler.keyState[KeyHandler.UP];
+			boolean peeDown = KeyHandler.keyState[KeyHandler.DOWN];
+			if (peeUp) {
+				player.changePeeArcY(-0.05);
+			}
+			if (peeDown) {
+				player.changePeeArcY(0.05);
+			}
 		} else {
-			player.setJumping(KeyHandler.keyState[KeyHandler.UP]);
+			if (player.isJumping() || player.isFalling()) {
+				player.setGliding(KeyHandler.keyState[KeyHandler.UP]);
+			} else {
+				player.setJumping(KeyHandler.keyState[KeyHandler.UP]);
+			}
+			
+			if (KeyHandler.isPressed(KeyHandler.UP)) {
+				
+				if ((!player.isFalling() && !player.isGliding())) {
+					Sound.jump.play();
+				} 
+		
+			}
+			
 		}
+		
+		
 		player.setFiring(KeyHandler.keyState[KeyHandler.SPACE]);
 		player.setThrowingPeeball(KeyHandler.keyState[KeyHandler.BUTTON_D]);
 		player.setDrawTrajectory(KeyHandler.keyState[KeyHandler.SHIFT]);
 		
-//		if (!KeyHandler.isPressed(KeyHandler.UP)) {
-//			player.setJumping(false);
+//		if (KeyHandler.keyState[KeyHandler.UP] && !player.isJumping() && player.isGliding() && player.getDY() > 1.155) {
+//			Sound.jump.play();
 //		}
+		
+		
+		
+		
 		
 		if (KeyHandler.isPressed(KeyHandler.NUMBER_1)) {
 			panel.setScale(1);
@@ -278,29 +306,6 @@ public class Level1State extends Level {
 //		//		if (k == KeyEvent.VK_DOWN) player.setDown(true);
 //		if (k == KeyEvent.VK_CONTROL) player.setJumping(true);
 //		if (k == KeyEvent.VK_SPACE) player.setFiring(true);
-//
-//		if (k == KeyEvent.VK_D) player.setThrowingPeeball(true);
-//
-//		if (k == KeyEvent.VK_F1) spawnSomeSlugs();
-//		if (k == KeyEvent.VK_F2) respawn();
-//
-//		if (k == KeyEvent.VK_1) panel.setScale(1);
-//		if (k == KeyEvent.VK_2)  panel.setScale(2);
-//		if (k == KeyEvent.VK_3)  panel.setScale(3);
-//
-//		if (k == KeyEvent.VK_SHIFT) player.setDrawTrajectory(true);
-//
-//		if (k == KeyEvent.VK_F4) player.setMaxPee(100000);
-//
-//		if (k == KeyEvent.VK_F5) drawDebug = !drawDebug;
-//		
-//		if (k == KeyEvent.VK_ESCAPE) {
-//			System.exit(0);
-//		}
-
-		//		if (k == KeyEvent.VK_F4) {
-		//			addText("Test", (double) player.getX(), (double) player.getY());
-		//		}
 
 	}
 
@@ -322,8 +327,7 @@ public class Level1State extends Level {
 //		if (k == KeyEvent.VK_CONTROL) player.setJumping(false);
 //		if (k == KeyEvent.VK_SPACE) player.setFiring(false);
 //		if (k == KeyEvent.VK_D) player.setThrowingPeeball(false);
-//
-//		if (k == KeyEvent.VK_SHIFT) player.setDrawTrajectory(false);
+
 	}
 
 	private void eventStart() {

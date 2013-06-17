@@ -36,8 +36,8 @@ public class Pee extends MapObject {
 			peeFallSpeed = 0.29;
 			peeRise = -26.13 * (new Random().nextDouble() * 0.2);
 			fromPeeBall = true;
-			cWidth = 2 + (new Random().nextInt(2) + 1);
-			cHeight = 2 + (new Random().nextInt(2) + 1);
+			cWidth = 2; // + (new Random().nextInt(2) + 1);
+			cHeight = 2; // + (new Random().nextInt(2) + 1);
 		}
 		
 		fromDirectionRight = b;
@@ -72,7 +72,7 @@ public class Pee extends MapObject {
 
 	@Override
 	public Rectangle getRectangle() {
-		return new Rectangle((int)x - cWidth, (int)y - cHeight, cWidth, cHeight);
+		return new Rectangle((int)x - (cWidth / 2), (int)y - (cHeight / 2), cWidth, cHeight);
 	}
 	
 	public boolean shouldRemove() {
@@ -96,9 +96,16 @@ public class Pee extends MapObject {
 
 	public void draw(Graphics2D g) {
 		setMapPosition();
-
+		
+//		g.setColor(new Color(0x090909));
+//		g.fillRect((int) (x + xMap - cWidth / 2 + cWidth), (int) (y + yMap - cHeight / 2) + 1, cWidth, cHeight);
+//		g.setColor(new Color(0xFFEC1E));
+//		g.fillRect((int) (x + xMap - cWidth / 2 + cWidth), (int) (y + yMap - cHeight / 2), cWidth, cHeight);
+		
+		g.setColor(new Color(0x090909));
+		g.fillRect((int) (x + xMap), (int) (y + yMap), cWidth, cHeight);
 		g.setColor(new Color(0xFFEC1E));
-		g.fillRect((int) (x + xMap - cWidth / 2 + cWidth), (int) (y + yMap - cHeight / 2), cWidth, cHeight);
+		g.fillRect((int) (x + xMap), (int) (y + yMap), cWidth, cHeight);
 
 		//		Rectangle temp = this.getRectangle();
 		//		g.setColor(Color.BLACK);

@@ -50,6 +50,7 @@ public class Player extends MapObject {
 	private ArrayList<Pee> peeList;
 	private ArrayList<PeeBall> peeballs;
 	private PeeBallTrajectory pbTrajectory;
+	private ArrayList<Enemy> enemies;
 	private boolean drawTrajectory;
 
 	private boolean scratching;
@@ -60,11 +61,10 @@ public class Player extends MapObject {
 	private double lastWalkableY;
 	private boolean lastFacing;
 
-
 	private boolean gliding;
 
 	private ArrayList<BufferedImage[]> sprites;
-	private final int[] numFrames = {2, 8, 1, 2, 4, 2, 5 };
+	private final int[] numFrames = { 2, 8, 1, 2, 4, 2, 5 };
 
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -78,7 +78,7 @@ public class Player extends MapObject {
 		super(tm);
 		width = 30;
 		height = 30;
-		cWidth = 20;
+		cWidth = 14;
 		cHeight = 20;
 
 		moveSpeed = 0.2;
@@ -115,20 +115,23 @@ public class Player extends MapObject {
 		peeBallDamage = 18;
 		peeList = new ArrayList<Pee>();
 		peeballs = new ArrayList<PeeBall>();
-		pbTrajectory =  new PeeBallTrajectory(tilemap, facingRight, this);
+		pbTrajectory = new PeeBallTrajectory(tilemap, facingRight, this);
 		scratchDamage = 8;
 		scratchRange = 40;
 
 		try {
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/playersprites3.png"));
+			BufferedImage spritesheet = ImageIO.read(getClass()
+					.getResourceAsStream("/Sprites/Player/playersprites3.png"));
 			sprites = new ArrayList<BufferedImage[]>();
 			for (int i = 0; i < 7; i++) {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for (int j = 0; j < numFrames[i]; j++) {
 					if (i != 6) {
-						bi[j] = spritesheet.getSubimage(j * width, i * height, width, height);
+						bi[j] = spritesheet.getSubimage(j * width, i * height,
+								width, height);
 					} else {
-						bi[j] = spritesheet.getSubimage(j * width * 2, i * height, width * 2, height);
+						bi[j] = spritesheet.getSubimage(j * width * 2, i
+								* height, width * 2, height);
 					}
 				}
 
@@ -144,11 +147,16 @@ public class Player extends MapObject {
 		animation.setDelay(400);
 	}
 
+	public void init(ArrayList<Enemy> enemies) {
+		this.enemies = enemies;
+	}
+
 	private void getNextPosition() {
 
 		if (knockback) {
 			dy += fallSpeed * 0.2;
-			if(!falling) knockback = false;
+			if (!falling)
+				knockback = false;
 			return;
 		}
 
@@ -182,7 +190,8 @@ public class Player extends MapObject {
 		}
 
 		// cannot attack while moving
-		if ((currentAction == SCRATCHING || currentAction == FIREBALL) && !(jumping || falling)) {
+		if ((currentAction == SCRATCHING || currentAction == FIREBALL)
+				&& !(jumping || falling)) {
 			dx = 0;
 		}
 
@@ -192,7 +201,7 @@ public class Player extends MapObject {
 			lastFacing = facingRight;
 		}
 
-		if (jumping  && !falling) {
+		if (jumping && !falling) {
 			dy = jumpStart;
 			falling = true;
 		}
@@ -221,10 +230,13 @@ public class Player extends MapObject {
 				}
 			}
 
-			if (dy > 0) jumping = false;
-			if (dy < 0 && !jumping) dy += stopJumpSpeed;
+			if (dy > 0)
+				jumping = false;
+			if (dy < 0 && !jumping)
+				dy += stopJumpSpeed;
 
-			if (dy > maxFallSpeed) dy = maxFallSpeed;
+			if (dy > maxFallSpeed)
+				dy = maxFallSpeed;
 
 		}
 
@@ -237,18 +249,22 @@ public class Player extends MapObject {
 		checkTileMapCollision();
 		setPosition(xTemp, yTemp);
 
+		checkAttack();
+
 		for (int i = 0; i < peeballs.size(); i++) {
 			peeballs.get(i).update();
 			if (peeballs.get(i).shouldRemove()) {
-				peeXplosion(peeballs.get(i).getX(), peeballs.get(i).getY(), peeballs.get(i).getThrownFrom());
-				//				Sound.ballon.play();
+				peeXplosion(peeballs.get(i).getX(), peeballs.get(i).getY(),
+						peeballs.get(i).getThrownFrom());
+				// Sound.ballon.play();
 				peeballs.remove(i);
 				i--;
 			}
 		}
 
 		if (currentAction == SCRATCHING) {
-			if (animation.hasPlayedOnce()) scratching = false;
+			if (animation.hasPlayedOnce())
+				scratching = false;
 		}
 
 		checkPee();
@@ -259,13 +275,15 @@ public class Player extends MapObject {
 				p.setPosition(x, y + 6);
 				peeList.add(p);
 				pee -= peeCost;
-				if (pee < 0) pee = 0;
+				if (pee < 0)
+					pee = 0;
 			}
 		}
 
 		if (throwingPeeball) {
 			if (peeBallCounter >= timeBetweenPeeBalls) {
-				PeeBall ball = new PeeBall(tilemap, facingRight, this, facingRight);
+				PeeBall ball = new PeeBall(tilemap, facingRight, this,
+						facingRight);
 				ball.setPosition(this.getX(), this.getY());
 				peeballs.add(ball);
 				peeBallCounter = 0;
@@ -280,8 +298,7 @@ public class Player extends MapObject {
 			} else {
 				pee += 2;
 			}
-		} 
-
+		}
 
 		for (int i = 0; i < peeList.size(); i++) {
 			peeList.get(i).update();
@@ -291,11 +308,9 @@ public class Player extends MapObject {
 			}
 		}
 
-
-
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 1000){
+			if (elapsed > 1000) {
 				flinching = false;
 			}
 		}
@@ -308,15 +323,8 @@ public class Player extends MapObject {
 				animation.setDelay(50);
 				width = 60;
 			}
-		} 
-		//		else if (firing) {
-		//			if (currentAction != FIREBALL) {
-		//				currentAction = FIREBALL;
-		//				animation.setFrames(sprites.get(FIREBALL));
-		//				animation.setDelay(100);
-		//				width = 30;
-		//			}
-		//		} 
+		}
+
 		else if (dy > 0) {
 			if (gliding) {
 				if (currentAction != GLIDING) {
@@ -356,11 +364,14 @@ public class Player extends MapObject {
 
 		animation.update();
 
-		if (drawTrajectory) pbTrajectory.update();
+		if (drawTrajectory)
+			pbTrajectory.update();
 
 		if (currentAction != SCRATCHING && currentAction != FIREBALL) {
-			if (right) facingRight = true;
-			if (left) facingRight = false;
+			if (right)
+				facingRight = true;
+			if (left)
+				facingRight = false;
 		}
 	}
 
@@ -368,24 +379,24 @@ public class Player extends MapObject {
 		if (pee < (maxPee / 10)) {
 			long elapsed = (System.nanoTime() - peeReminderTimer) / 1000000;
 			if (elapsed > peeReminderDuration) {
-				this.addText("Måste ha öl för att kunna kissa mer!", x - (cWidth + 50), y, 2000, new Color(255, 125, 0), 0.16, true);
+				this.addText("Måste ha öl för att kunna kissa mer!", x
+						- (cWidth + 50), y, 2000, new Color(255, 125, 0), 0.16,
+						true);
 				peeReminderTimer = System.nanoTime();
 			}
 		}
 	}
 
-
 	public void draw(Graphics2D g) {
 		setMapPosition();
 
-
 		// draw player
-//		if (flinching) {
-//			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-//			if (elapsed / 100 % 2 == 0) {
-//				return;
-//			}
-//		}
+		// if (flinching) {
+		// long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+		// if (elapsed / 100 % 2 == 0) {
+		// return;
+		// }
+		// }
 
 		super.draw(g);
 
@@ -397,23 +408,29 @@ public class Player extends MapObject {
 			p.draw(g);
 		}
 
-		if (drawTrajectory) pbTrajectory.draw(g);
-
-
-
+		if (drawTrajectory)
+			pbTrajectory.draw(g);
 
 	}
 
-	public void checkAttack(ArrayList<Enemy> enemies) {
+	public void checkAttack() {
 		synchronized (enemies) {
 			for (Enemy e : enemies) {
 
 				for (int i = 0; i < peeList.size(); i++) {
 					if (peeList.get(i).intersects(e)) {
 						if (peeList.get(i).isFromPeeBall()) {
-							e.hit(peeBallDamage + ((new Random().nextInt(2)) * (new Random().nextInt(2) + 1)) + new Random().nextInt(2), peeList.get(i).getFromDirectionRight());
+							e.hit(peeBallDamage
+									+ ((new Random().nextInt(2)) * (new Random()
+											.nextInt(2) + 1))
+									+ new Random().nextInt(2), peeList.get(i)
+									.getFromDirectionRight());
 						} else {
-							e.hit(peeDamage + ((new Random().nextInt(2)) * (new Random().nextInt(2) + 1)) + new Random().nextInt(2), peeList.get(i).getFromDirectionRight());
+							e.hit(peeDamage
+									+ ((new Random().nextInt(2)) * (new Random()
+											.nextInt(2) + 1))
+									+ new Random().nextInt(2), peeList.get(i)
+									.getFromDirectionRight());
 						}
 						peeList.get(i).setHit();
 						break;
@@ -422,45 +439,60 @@ public class Player extends MapObject {
 
 				for (int i = 0; i < peeballs.size(); i++) {
 					if (peeballs.get(i).intersects(e)) {
-						e.hit(peeballs.get(i).getDirectHitDamage() + ((new Random().nextInt(2)) * (new Random().nextInt(2) + 1)) + new Random().nextInt(2), false);
-						this.addText("Direct hit!", e.getX(), e.getY(), 400, new Color(255, 0, 125), 0.28);
+						e.hit(peeballs.get(i).getDirectHitDamage()
+								+ ((new Random().nextInt(2)) * (new Random()
+										.nextInt(2) + 1))
+								+ new Random().nextInt(2), false);
+						this.addText("Direct hit!", e.getX(), e.getY(), 400,
+								new Color(255, 0, 125), 0.28);
 
 						peeballs.get(i).setHit();
 						break;
 					}
 				}
 
-
 				if (intersects(e)) {
-					if (falling && !jumping && !e.falling) {
-						if ((y + cHeight) < (e.getY() + e.getCWidth())) {
+					bIntersects = true;
+					if (e.contains(x, (y + (cHeight / 2)))
+							|| e.contains(x - 1, (y + (cHeight / 2)))
+							|| e.contains(x - 2, (y + (cHeight / 2)))
+							|| e.contains(x - 3, (y + (cHeight / 2)))
+							|| e.contains(x - 4, (y + (cHeight / 2)))
+							|| e.contains(x - 5, (y + (cHeight / 2)))
+							|| e.contains(x - 6, (y + (cHeight / 2)))
+							|| e.contains(x + 1, (y + (cHeight / 2)))
+							|| e.contains(x + 2, (y + (cHeight / 2)))
+							|| e.contains(x + 3, (y + (cHeight / 2)))
+							|| e.contains(x + 4, (y + (cHeight / 2)))
+							|| e.contains(x + 5, (y + (cHeight / 2)))
+							|| e.contains(x + 6, (y + (cHeight / 2)))) {
+						System.out.println("stomp");
+						if (falling && !jumping && !e.falling) {
 							e.hit(5000, false);
-						} else {
-							if (!e.isDying()) {
-								hit(e.getDamage());
-							}
 						}
 					} else {
 						if (!e.isDying()) {
 							hit(e.getDamage());
+							bIntersects = false;
 						}
 					}
+				} else {
+					bIntersects = false;
 				}
-
 			}
+
 		}
-
-
-
-
 	}
 
 	public void hit(int damage) {
-		if (flinching) return;
+		if (flinching)
+			return;
 		addText("" + damage, x, y - 10, 600, new Color(255, 0, 0));
 		health -= damage;
-		if (health < 0) health = 0;
-		if (health == 0) dead = true;
+		if (health < 0)
+			health = 0;
+		if (health == 0)
+			dead = true;
 		flinching = true;
 		flinchTimer = System.nanoTime();
 	}
@@ -473,17 +505,34 @@ public class Player extends MapObject {
 		}
 	}
 
-	public boolean getFacingRight() {return facingRight;}
+	public boolean getFacingRight() {
+		return facingRight;
+	}
 
-	public int getHealth() {return health;}
-	public int getMaxHealth() {return maxHealth;}
-	public int getPee() {return pee;}
-	public int getMaxPee() {return maxPee;}
+	public int getHealth() {
+		return health;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public int getPee() {
+		return pee;
+	}
+
+	public int getMaxPee() {
+		return maxPee;
+	}
+
 	public void setMaxPee(int mp) {
 		maxPee = mp;
 		pee = maxPee;
 	}
-	public boolean isMoving() {return left || right;};
+
+	public boolean isMoving() {
+		return left || right;
+	};
 
 	@Override
 	public void setPosition(double x, double y) {
@@ -514,6 +563,10 @@ public class Player extends MapObject {
 
 	public boolean isJumping() {
 		return jumping;
+	}
+
+	public boolean isGliding() {
+		return gliding;
 	}
 
 	public boolean isFalling() {
@@ -550,11 +603,21 @@ public class Player extends MapObject {
 		drawTrajectory = b;
 	}
 
-	public boolean isPeeing() {return peeing;}
+	public boolean isPeeing() {
+		return peeing;
+	}
 
-	public int getExperience() {return experience;}
-	public int getNextLevel() {return nextLevel;}
-	public void setExperience(int amount) {experience += amount;}
+	public int getExperience() {
+		return experience;
+	}
+
+	public int getNextLevel() {
+		return nextLevel;
+	}
+
+	public void setExperience(int amount) {
+		experience += amount;
+	}
 
 	public boolean isThrowingPeeball() {
 		return throwingPeeball;
@@ -569,10 +632,11 @@ public class Player extends MapObject {
 	}
 
 	public void addBeer(int amount) {
-		if (pee == maxPee) return;
+		if (pee >= maxPee)
+			return;
 		pee += amount;
-		this.addText("+25 beer", x, y - 10, 1700,  new Color(125, 255, 109), 0.13, true);
+		this.addText("+25 beer", x, y - 10, 1700, new Color(125, 255, 109),
+				0.13, true);
 	}
-
 
 }
