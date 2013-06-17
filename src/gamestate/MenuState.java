@@ -53,7 +53,7 @@ public class MenuState extends GameState {
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
 			bg.setScroll(-0.5, 0);
 
-			titleColor = new Color(255, 0, 255);
+			titleColor = new Color(126, 255, 0);
 			titleFont1 = new Font("Eras Bold ITC", Font.BOLD, 18);
 			titleFont2 = new Font("Eras Bold ITC", Font.BOLD, 40);
 			font = new Font("Eras Bold ITC", Font.BOLD, 16);
@@ -65,7 +65,7 @@ public class MenuState extends GameState {
 	}
 
 	public void init() {
-		Sound.deathscreen3.play(true);
+		Sound.music5.play(true);
 		setScale = panel.getScale();
 	}
 

@@ -50,8 +50,8 @@ public class DeathScreen extends GameState {
 
 		try {
 			bg = new Background("/Backgrounds/clouds.png", 1);
-			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
-			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death.png"));
+			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange2.png"));
+			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death2.png"));
 			bg.setScroll(-0.5, 0);
 
 			titleColor = new Color(225, 0, 0);

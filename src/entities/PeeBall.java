@@ -20,7 +20,8 @@ public class PeeBall extends MapObject {
 	private ArrayList<Pee> peeList;
 	private Player player;
 	private BufferedImage[] sprites;
-
+	
+	private int directHitDamage;
 	
 	public PeeBall(TileMap tm, boolean right, Player player, boolean b) {
 		super(tm);
@@ -31,7 +32,9 @@ public class PeeBall extends MapObject {
 		if (right) dx = moveSpeed;
 		else dx = -moveSpeed;
 		dy = initialYSpeed;
-
+		
+		directHitDamage = 35;
+		
 		thrownFrom = b;
 		
 		width = 10;
@@ -39,7 +42,6 @@ public class PeeBall extends MapObject {
 		
 		cWidth = 2;
 		cHeight = 2;
-		
 		
 		
 		try {
@@ -59,6 +61,10 @@ public class PeeBall extends MapObject {
 		animation.setFrames(sprites);
 		animation.setDelay(20);
 		
+	}
+	
+	public int getDirectHitDamage() {
+		return directHitDamage;
 	}
 	
 	public boolean getThrownFrom() {

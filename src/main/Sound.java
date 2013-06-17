@@ -72,6 +72,7 @@ public class Sound {
     public static Clips menu = load("/Sounds/menu.wav", 4);
     public static Clips death = load("/Sounds/death.wav", 4);
     public static Clips jump = load("/Sounds/jump.wav", 1);
+    public static Clips ballon = load("/Sounds/peeballon.wav", 1);
 
     private static Clips load(String name, int count) {
         try {

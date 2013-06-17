@@ -36,6 +36,7 @@ public class TileMap {
 	// tileset
 	private BufferedImage tileset;
 	private int numTilesAcross;
+	private int numTilesVertical;
 	private Tile[][] tiles;
 
 	// drawing
@@ -57,14 +58,17 @@ public class TileMap {
 		try {
 			tileset = ImageIO.read(getClass().getResourceAsStream(s));
 			numTilesAcross = tileset.getWidth() / tileSize;
-			tiles = new Tile[2][numTilesAcross];
+			numTilesVertical = tileset.getHeight() / tileSize;
+			tiles = new Tile[numTilesVertical][numTilesAcross];
 
 			BufferedImage subimage;
 			for (int col = 0; col < numTilesAcross; col++) {
 				subimage = tileset.getSubimage(col * tileSize, 0, tileSize, tileSize);
-				tiles[0][col] = new Tile(subimage, Tile.NORMAL);
+				tiles[0][col] = new Tile(subimage, Tile.NORMAL, true);
 				subimage = tileset.getSubimage(col * tileSize, tileSize, tileSize, tileSize);
-				tiles[1][col] = new Tile(subimage, Tile.BLOCKED);
+				tiles[1][col] = new Tile(subimage, Tile.BLOCKED, false);
+				subimage = tileset.getSubimage(col * tileSize, 60, tileSize, tileSize);
+				tiles[2][col] = new Tile(subimage, Tile.EVENT, false);
 			}
 
 		} catch(Exception e) {
@@ -148,6 +152,20 @@ public class TileMap {
 						e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public boolean isWalkable(int row, int col) {
+		try {
+			
+			int rc = map[row][col];
+			int r = rc / numTilesAcross;
+			int c = rc % numTilesAcross;
+			return tiles[r][c].isWalkable();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println(numRows + ":" + numCols + " - " + row + ":" + col);
+						e.printStackTrace();
+		}
+		return false;
 	}
 
 	public void setPosition(double x, double y) {

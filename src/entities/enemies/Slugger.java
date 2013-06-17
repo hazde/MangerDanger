@@ -116,13 +116,13 @@ public class Slugger extends Enemy {
 	@Override
 	public void hit(int damage, boolean fromLeft) {
 		if (dead || flinching) return;	
-		this.addText("" + damage, x, y - 10, 1000, new Color(255, 125, 0));
+		this.addText("" + damage, x, y - 10, 1000, new Color(100 + (damage * 4), 255 - (damage * 6), 255 - (damage * 6)));
 		Sound.hit.play();
 		health -= damage;
 		if (health < 0) health = 0;
 		if (health == 0) {
 			dying = true;
-//			Sound.death.play();
+			Sound.death.play();
 			animation.setFrames(hitSprites);
 			animation.setDelay(35);
 			dx = 0;
@@ -132,9 +132,15 @@ public class Slugger extends Enemy {
 	}
 	
 	public void draw(Graphics2D g) {
-//		if (notOnScreen()) return;
-		
 		setMapPosition();
+		
+//		if (flinching) {
+//			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+//			if (elapsed / 50 % 2 == 0) {
+//				return;
+//			}
+//		}
+		
 		super.draw(g);
 		
 	}

@@ -8,6 +8,9 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import main.GamePanel;
+import main.Sound;
+
 import tilemap.TileMap;
 
 @SuppressWarnings("unused")
@@ -70,7 +73,7 @@ public class Player extends MapObject {
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
-	
+
 	public Player(TileMap tm) {
 		super(tm);
 		width = 30;
@@ -102,10 +105,10 @@ public class Player extends MapObject {
 
 		facingRight = true;
 
-		health = maxHealth = 1;
+		health = maxHealth = 5;
 		pee = maxPee = 25000;
 
-		peeCost = 100;
+		peeCost = 30;
 		peeDamage = 2;
 		peeBallDamage = 7;
 		peeList = new ArrayList<Pee>();
@@ -146,7 +149,7 @@ public class Player extends MapObject {
 			if(!falling) knockback = false;
 			return;
 		}
-		
+
 		if (dx != 0 || dy != 0) {
 			resetPeeArc();
 		}
@@ -197,6 +200,7 @@ public class Player extends MapObject {
 				dy += fallSpeed * 0.05;
 				if (this.y > tilemap.getHeight() + 30) {
 					setGliding(false);
+					hit(10);
 					if (lastFacing) {
 						setPosition(lastWalkableX - 20, lastWalkableY - 40);
 					} else {
@@ -206,6 +210,7 @@ public class Player extends MapObject {
 			} else {
 				dy += fallSpeed;
 				if (this.y > tilemap.getHeight() + 100) {
+					hit(10);
 					if (lastFacing) {
 						setPosition(lastWalkableX - 20, lastWalkableY - 40);
 					} else {
@@ -234,11 +239,12 @@ public class Player extends MapObject {
 			peeballs.get(i).update();
 			if (peeballs.get(i).shouldRemove()) {
 				peeXplosion(peeballs.get(i).getX(), peeballs.get(i).getY(), peeballs.get(i).getThrownFrom());
+				//				Sound.ballon.play();
 				peeballs.remove(i);
 				i--;
 			}
 		}
-		
+
 		if (currentAction == SCRATCHING) {
 			if (animation.hasPlayedOnce()) scratching = false;
 		}
@@ -265,7 +271,7 @@ public class Player extends MapObject {
 
 		if (!peeing) {
 
-			if (pee > maxPee) {
+			if (pee >= maxPee) {
 				pee = maxPee;
 			} else {
 				pee += 2;
@@ -281,15 +287,15 @@ public class Player extends MapObject {
 			}
 		}
 
-		
-		
+
+
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if (elapsed > 1000){
 				flinching = false;
 			}
 		}
-		
+
 		// ange vilken animation som ska genomf�ras beroende p� currentAction
 		if (scratching) {
 			if (currentAction != SCRATCHING) {
@@ -345,8 +351,8 @@ public class Player extends MapObject {
 		}
 
 		animation.update();
-		
-		pbTrajectory.update();
+
+		if (drawTrajectory) pbTrajectory.update();
 
 		if (currentAction != SCRATCHING && currentAction != FIREBALL) {
 			if (right) facingRight = true;
@@ -368,8 +374,7 @@ public class Player extends MapObject {
 	public void draw(Graphics2D g) {
 		setMapPosition();
 
-		
-		
+
 		// draw player
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
@@ -378,7 +383,7 @@ public class Player extends MapObject {
 			}
 		}
 
-		
+		super.draw(g);
 
 		for (Pee p : peeList) {
 			p.draw(g);
@@ -387,11 +392,11 @@ public class Player extends MapObject {
 		for (PeeBall p : peeballs) {
 			p.draw(g);
 		}
-		
+
 		if (drawTrajectory) pbTrajectory.draw(g);
-		
-		super.draw(g);
-		
+
+
+
 
 	}
 
@@ -411,36 +416,45 @@ public class Player extends MapObject {
 					}
 				}
 
-				
+				for (int i = 0; i < peeballs.size(); i++) {
+					if (peeballs.get(i).intersects(e)) {
+						e.hit(peeballs.get(i).getDirectHitDamage() + ((new Random().nextInt(2)) * (new Random().nextInt(2) + 1)) + new Random().nextInt(2), false);
+						this.addText("Direct hit!", e.getX(), e.getY(), 400, new Color(255, 0, 125), 0.28);
+
+						peeballs.get(i).setHit();
+						break;
+					}
+				}
+
+
 				if (intersects(e)) {
 					hit(e.getDamage());
 				}
-				
+
 			}
 		}
 
 
-		
+
 
 	}
-	
+
 	public void hit(int damage) {
 		if (flinching) return;
 		health -= damage;
-//		if (facingRight){
-//			dx = -6.0;
-//		} else {
-//			dx = 6.0;
-//		}
-//		
-//		dy = -4.0;
+		//		if (facingRight){
+		//			dx = -6.0;
+		//		} else {
+		//			dx = 6.0;
+		//		}
+		//		
+		//		dy = -4.0;
 		if (health < 0) health = 0;
 		if (health == 0) dead = true;
-		knockback = true;
 		flinching = true;
 		flinchTimer = System.nanoTime();
 	}
-	
+
 	public void peeXplosion(double x, double y, boolean b) {
 		for (int i = 0; i < 40; i++) {
 			Pee p = new Pee(tilemap, b, null, facingRight);
@@ -448,7 +462,7 @@ public class Player extends MapObject {
 			peeList.add(p);
 		}
 	}
-	
+
 	public boolean getFacingRight() {return facingRight;}
 
 	public int getHealth() {return health;}
@@ -466,7 +480,7 @@ public class Player extends MapObject {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public void setFiring(boolean b) {
 		peeing = b;
 		active = peeing;
@@ -517,11 +531,11 @@ public class Player extends MapObject {
 		peeArcX = 0;
 		peeArcY = 0;
 	}
-	
+
 	public boolean isDead() {
 		return dead;
 	}
-	
+
 	public void setDrawTrajectory(boolean b) {
 		drawTrajectory = b;
 	}
@@ -538,6 +552,15 @@ public class Player extends MapObject {
 
 	public void setThrowingPeeball(boolean throwingPeeball) {
 		this.throwingPeeball = throwingPeeball;
+	}
+
+	public int getTileStandingOn() {
+		return standingOnTile;
+	}
+	
+	public void addBeer(int amount) {
+		if (pee == maxPee) return;
+		pee += amount;
 	}
 
 

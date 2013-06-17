@@ -1,5 +1,6 @@
 package gamestate;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,6 +14,7 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.Sound;
 import tilemap.Background;
+import tilemap.Tile;
 import tilemap.TileMap;
 import entities.Enemy;
 import entities.FloatingText;
@@ -28,12 +30,15 @@ public class Level1State extends Level {
 	private BufferedImage death;
 	private boolean lightmap;
 	private GamePanel panel;
-	
+
 	private int eventCount = 0;
 	private boolean eventStart;
 	private ArrayList<Rectangle> tb;
 	private boolean eventFinish;
 	private boolean eventDead;
+	private float screenFade = 0;
+	
+	private boolean drawDebug = true;
 
 
 	public Level1State(GameStateManager manager, GamePanel panel) {
@@ -53,27 +58,28 @@ public class Level1State extends Level {
 		tilemap.setPosition(0, 0);
 
 		bg = new Background("/Backgrounds/clouds.png", 0.1);
-		
+
 		try {
-			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death.png"));
+			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death2.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		bg.setScroll(-0.2, 0);
 		player = new Player(tilemap);
 		player.setPosition(tilemap.getSpawnPointX() + (player.getWidth() / 2), tilemap.getSpawnPointY());
 		enemies = new ArrayList<Enemy>();
-		spawnSomeSlugs();
+		
 		lightmap = false;
 		hud = new HUD(player);
+		spawnSomeSlugs();
 		eventStart = true;
 		tb = new ArrayList<Rectangle>();
 		eventStart();
 	}
 
 	public void spawnSomeSlugs() {
-		Slugger[] s = new Slugger[15];
+		Slugger[] s = new Slugger[25];
 		for (int i = 0; i < s.length; i++) {
 			s[i] = new Slugger(tilemap);
 
@@ -86,18 +92,15 @@ public class Level1State extends Level {
 
 
 	public void update() {
-//		if (player.isDead()) {
-//			manager.setState(GameStateManager.DEATHSCREEN);
-//		}
-		
+
 		if(eventStart) eventStart();
 		if(eventDead) eventDead();
 		if(eventFinish) eventFinish();
-		
+
 		if(player.isDead()) {
 			eventDead = true;
 		}
-		
+
 		bg.update();
 		player.update();
 		tilemap.setPosition(GamePanel.WIDTH / 2  - player.getX(), GamePanel.HEIGHT / 3 - player.getY() - 22);
@@ -121,7 +124,7 @@ public class Level1State extends Level {
 
 		tilemap.draw(g);
 
-		
+
 
 
 		for (int i = 0; i < getEnemies().size(); i++) {
@@ -129,8 +132,9 @@ public class Level1State extends Level {
 			if (getEnemies().get(i).isDead() || getEnemies().get(i).getDiedFromFalling()) {
 				if (!getEnemies().get(i).getDiedFromFalling()) {
 					int xp = new Random().nextInt(3) + 1;
-					player.setExperience(xp);
-					player.addText("+ " + xp +  "xp", player.getX(), player.getY() - 10, 1700,  new Color(255, 211, 109));
+//					player.setExperience(xp);
+					player.addBeer(2500);
+					player.addText("+25 beer", player.getX(), player.getY() - 10, 1700,  new Color(125, 255, 109), 0.13);
 				} else {
 					//					if (new Random().nextInt(6) % 5 == 0) {
 					//						player.addText("Mähähä! Han ramlade ner!", player.getX() - player.getCWidth() * 2, player.getY() - 20, 500,  new Color(125, 255, 0), 0.09, true);
@@ -141,18 +145,24 @@ public class Level1State extends Level {
 			}
 
 		}
-		
+
 		player.draw(g);
 		hud.draw(g);
-		
+
+		if (drawDebug) {
 		g.setColor(Color.BLACK);
-		g.fillRect(00, GamePanel.HEIGHT - 40, 200, GamePanel.HEIGHT);
-		
+		g.fillRect(00, GamePanel.HEIGHT - 50, 220, GamePanel.HEIGHT);
+
 		g.setColor(Color.BLACK);
-		g.drawString("MAP Bounds: " + (int) tilemap.getX() + " -> " + (int) (tilemap.getX() + (tilemap.getWidth() - GamePanel.WIDTH)) + " " + (int) tilemap.getY() + " -> " + (int) (tilemap.getHeight() + tilemap.getY()), 6, GamePanel.HEIGHT - 24);
+		g.drawString("Tile @ feet (type): " + Tile.getTileProperty(player.getTileStandingOn()) , 6, GamePanel.HEIGHT - 34);
 		g.setColor(Color.WHITE);
-		g.drawString("MAP Bounds: " + (int) tilemap.getX() + " -> " + (int) (tilemap.getX() + (tilemap.getWidth() - GamePanel.WIDTH)) + " " + (int) tilemap.getY() + " -> " + (int) (tilemap.getHeight() + tilemap.getY()), 5, GamePanel.HEIGHT - 25);
+		g.drawString("Tile @ feet (type): " + Tile.getTileProperty(player.getTileStandingOn()) , 5, GamePanel.HEIGHT - 35);
 		
+		g.setColor(Color.BLACK);
+		g.drawString("MAP Bounds: W: " + (int) Math.abs(tilemap.getX()) + " -> " + (int) (GamePanel.WIDTH - tilemap.getX() ) + ", H: " + (int) Math.abs(tilemap.getY()) + " -> " + (int) (tilemap.getHeight() + tilemap.getY()), 6, GamePanel.HEIGHT - 24);
+		g.setColor(Color.WHITE);
+		g.drawString("MAP Bounds: W: " + (int) Math.abs(tilemap.getX()) + " -> " + (int) (GamePanel.WIDTH - tilemap.getX()) + ", H: " + (int) Math.abs(tilemap.getY()) + " -> " + (int) (tilemap.getHeight() + tilemap.getY()), 5, GamePanel.HEIGHT - 25);
+
 		g.setColor(Color.BLACK);
 		g.drawString("XY: " + player.getX() + " " + player.getY(), 6, GamePanel.HEIGHT - 14);
 		g.setColor(Color.WHITE);
@@ -167,12 +177,21 @@ public class Level1State extends Level {
 		g.drawString("Enemy (Linus) count: " + getEnemies().size(), 185 , 12);
 		g.setColor(Color.WHITE);
 		g.drawString("Enemy (Linus) count: " + getEnemies().size(), 184, 11);
+
+		}
 		
 		g.setColor(java.awt.Color.BLACK);
 		for(int i = 0; i < tb.size(); i++) {
-			g.fill(tb.get(i));
 			if (eventDead) {
-			g.drawImage(death, (int) (tb.get(i).getX() - (i * 6)), (int) tb.get(i).getY() - (i * 4), (int) tb.get(i).getWidth() + (i * 12), (int) tb.get(i).getHeight() + (i * 8), null);
+				screenFade += 0.02;
+				if (screenFade >= 1) {
+					screenFade = 1;
+				}
+				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, screenFade * 1f));
+				g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+				g.drawImage(death, (int) tb.get(i).getX() + 30, 30, death.getWidth(), death.getHeight(), null);
+			} else {
+				g.fill(tb.get(i));
 			}
 		}
 
@@ -206,15 +225,17 @@ public class Level1State extends Level {
 
 		if (k == KeyEvent.VK_F1) spawnSomeSlugs();
 		if (k == KeyEvent.VK_F2) respawn();
-		
+
 		if (k == KeyEvent.VK_1) panel.setScale(1);
 		if (k == KeyEvent.VK_2)  panel.setScale(2);
 		if (k == KeyEvent.VK_3)  panel.setScale(3);
-		
-		if (k == KeyEvent.VK_SHIFT) player.setDrawTrajectory(true);
-		
-		if (k == KeyEvent.VK_F4) player.setMaxPee(1000000);
 
+		if (k == KeyEvent.VK_SHIFT) player.setDrawTrajectory(true);
+
+		if (k == KeyEvent.VK_F4) player.setMaxPee(100000);
+
+		if (k == KeyEvent.VK_F5) drawDebug = !drawDebug;
+		
 		if (k == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
@@ -243,7 +264,7 @@ public class Level1State extends Level {
 		if (k == KeyEvent.VK_CONTROL) player.setJumping(false);
 		if (k == KeyEvent.VK_SPACE) player.setFiring(false);
 		if (k == KeyEvent.VK_D) player.setThrowingPeeball(false);
-		
+
 		if (k == KeyEvent.VK_SHIFT) player.setDrawTrajectory(false);
 	}
 
@@ -262,34 +283,42 @@ public class Level1State extends Level {
 			tb.get(2).y += 4;
 			tb.get(3).x += 6;
 		}
-//		if(eventCount == 30) title.begin();
+		//		if(eventCount == 30) title.begin();
 		if(eventCount == 60) {
 			eventStart = false;
 			eventCount = 0;
 			tb.clear();
 		}
 	}
-	
+
 	// player has died
 	private void eventDead() {
 		eventCount++;
 		if(eventCount == 1) {
 			Sound.stopAllMusic();
-//			player.setDead();
-//			player.stop();
+			//			player.setDead();
+			//			player.stop();
 		}
 		if(eventCount == 60) {
-			
-			Sound.deathscreen.play();
+
+			Sound.deathscreen2.play();
 			tb.clear();
 			tb.add(new Rectangle(
-				GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
+					GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
 		}
 		else if(eventCount > 60) {
-			tb.get(0).x -= 6;
-			tb.get(0).y -= 4;
-			tb.get(0).width += 12;
-			tb.get(0).height += 8;
+				if (tb.get(0).x > 0) {
+					tb.get(0).x -= (GamePanel.WIDTH / 100) / 2;
+				} else {
+					tb.get(0).x = 0;
+				}
+				if ( tb.get(0).y > 0) {
+					tb.get(0).y -= (GamePanel.HEIGHT / 100) / 2;
+				} else {
+					tb.get(0).y = 0;
+				}
+				if (tb.get(0).width < GamePanel.WIDTH) tb.get(0).width += (GamePanel.WIDTH / 100);
+				if (tb.get(0).height < GamePanel.HEIGHT) tb.get(0).height += (GamePanel.HEIGHT / 100);
 		}
 		if(eventCount >= 520) {
 			if(player.isDead()) {
@@ -297,14 +326,14 @@ public class Level1State extends Level {
 			}
 		}
 	}
-	
+
 	// finished level
 	private void eventFinish() {
 		eventCount++;
 		if(eventCount == 120) {
 			tb.clear();
 			tb.add(new Rectangle(
-				GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
+					GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
 		}
 		else if(eventCount > 120) {
 			tb.get(0).x -= 6;
@@ -313,7 +342,7 @@ public class Level1State extends Level {
 			tb.get(0).height += 8;
 		}
 
-		
+
 	}
 
 }

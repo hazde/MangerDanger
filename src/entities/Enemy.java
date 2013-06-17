@@ -12,8 +12,8 @@ public class Enemy extends MapObject {
 	protected int damage;
 	protected boolean diedFromFalling;
 	
-	protected boolean flinching;
-	protected long flinchTimer;
+//	protected boolean flinching;
+//	protected long flinchTimer;
 	
 	public Enemy(TileMap tm) {
 		super(tm);

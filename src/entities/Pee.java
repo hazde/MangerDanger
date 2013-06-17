@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.Random;
 
 import tilemap.TileMap;
@@ -69,6 +70,11 @@ public class Pee extends MapObject {
 		dx = 0;
 	}
 
+	@Override
+	public Rectangle getRectangle() {
+		return new Rectangle((int)x - cWidth, (int)y - cHeight, cWidth, cHeight);
+	}
+	
 	public boolean shouldRemove() {
 		return remove;
 	}
