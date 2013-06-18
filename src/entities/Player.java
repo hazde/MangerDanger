@@ -79,7 +79,7 @@ public class Player extends MapObject {
 		super(tm);
 		width = 30;
 		height = 30;
-		cWidth = 14;
+		cWidth = 16;
 		cHeight = 20;
 
 		moveSpeed = 0.2;
@@ -485,7 +485,7 @@ public class Player extends MapObject {
 							|| e.contains(x + 4, (y + (cHeight / 2)))
 							|| e.contains(x + 5, (y + (cHeight / 2)))
 							|| e.contains(x + 6, (y + (cHeight / 2)))) {
-						if (falling && !jumping && !e.falling) {
+						if (falling && !gliding && !jumping && !e.falling) {
 							e.hit(5000, false);
 						}
 					} else {

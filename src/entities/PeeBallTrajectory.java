@@ -36,8 +36,8 @@ public class PeeBallTrajectory extends MapObject {
 		width = 10;
 		height = 10;
 
-		cWidth = 2;
-		cHeight = 2;
+		cWidth = 10;
+		cHeight = 10;
 	}
 
 	public void reset(boolean right) {

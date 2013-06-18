@@ -60,7 +60,7 @@ public class Level1State extends Level {
 		tilemap.loadMap("/Maps/level1-5.map");
 		tilemap.setPosition(0, 0);
 
-		bg = new Background("/Backgrounds/clouds.png", 0.1, panel);
+		bg = new Background("/Backgrounds/grassbg1.gif", 0.1, panel);
 
 		try {
 			death = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/death2.png"));
@@ -68,7 +68,7 @@ public class Level1State extends Level {
 			e.printStackTrace();
 		}
 
-		bg.setScroll(-0.2, 0);
+//		bg.setScroll(-0.01, 0);
 		player = new Player(tilemap);
 		player.setPosition(tilemap.getSpawnPointX() + (player.getWidth() / 2), tilemap.getSpawnPointY());
 		enemies = new ArrayList<Enemy>();
@@ -104,7 +104,7 @@ public class Level1State extends Level {
 
 		if(player.isDead()) {
 			eventDead = true;
-			enemies.clear();
+//			enemies.clear();
 		}
 
 		bg.update();

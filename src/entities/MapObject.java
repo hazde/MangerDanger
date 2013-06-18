@@ -145,7 +145,7 @@ public abstract class MapObject {
 
 		if (y < 0) {											// Entity är ovanför banans upper bound
 			topTile = bottomTile = 0;
-		} else if (y + cWidth / 2 > tilemap.getHeight()) {		// Entity är nedanför banans lower bound
+		} else if (y + cHeight / 2 > tilemap.getHeight()) {		// Entity är nedanför banans lower bound
 			bottomTile = (tilemap.getHeight() / tileSize) - 1;
 			topTile = bottomTile;		
 		}

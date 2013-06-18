@@ -50,9 +50,9 @@ public class MenuState extends GameState {
 		this.manager = manager;
 		this.panel = panel;
 		try {
-			bg = new Background("/Backgrounds/clouds.png", 1, panel);
+			bg = new Background("/Backgrounds/grassbg1.gif", 1, panel);
 			mange = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/mange.png"));
-			bg.setScroll(-0.5, 0);
+			bg.setScroll(-0.25, 0);
 
 			titleColor = new Color(126, 255, 0);
 			titleFont1 = new Font("Eras Bold ITC", Font.BOLD, 18);
@@ -78,10 +78,10 @@ public class MenuState extends GameState {
 
 	public void draw(Graphics2D g) {
 		// Rita bakgrundsbilden
-//		bg.draw(g);
+		bg.draw(g);
 		
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, panel.getWindowWidth(), panel.getWindowHeight());
+//		g.setColor(Color.BLACK);
+//		g.fillRect(0, 0, panel.getWindowWidth(), panel.getWindowHeight());
 
 		// Rita en alltmer nyfiken mange beroende på menyvalen
 		g.drawImage(mange, (panel.getWindowWidth() - (panel.getWindowWidth() - 270)) + currentChoice * 45, 0, panel.getWindowWidth(), panel.getWindowHeight(), null);
@@ -107,12 +107,12 @@ public class MenuState extends GameState {
 			if (i ==  currentChoice) {
 				if (currentChoice == OPTIONS) {
 					g.setColor(Color.BLACK);
-					String str = options[i] + " - <" + setScale + ">";
+					String str = options[i] + " - < " + setScale + " >";
 					Rectangle2D r = fm.getStringBounds(str, g);
 					int x = (panel.getWindowWidth() - (int) r.getWidth()) / 3;
-					g.drawString(options[i] + " - <" + setScale + ">", x + 1, (ty + 1) + i * 20);
+					g.drawString(options[i] + " - < " + setScale + " >", x + 1, (ty + 1) + i * 20);
 					g.setColor(titleColor);
-					g.drawString(options[i] + " - <" + setScale + ">", x + 1, ty + i * 20);
+					g.drawString(options[i] + " - < " + setScale + " >", x + 1, ty + i * 20);
 				} else {
 					g.setColor(Color.BLACK);
 					Rectangle2D r = fm.getStringBounds(options[i], g);
@@ -207,25 +207,7 @@ public class MenuState extends GameState {
 	
 
 	public void keyPressed(int k) {
-//		if (k == KeyEvent.VK_ENTER || k == KeyEvent.VK_E) {
-//			
-//		}
-//
-//		if (k == KeyEvent.VK_UP || k == KeyEvent.VK_W) {
-//			
-//		}
-//
-//		if (k == KeyEvent.VK_LEFT || k == KeyEvent.VK_A) {
-//			
-//		}
-//
-//		if (k == KeyEvent.VK_RIGHT || k == KeyEvent.VK_D) {
-//			
-//		}
-//
-//		if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_S) {
-//			
-//		}
+
 	}
 
 	private void select() {
@@ -233,8 +215,8 @@ public class MenuState extends GameState {
 		case START:
 			manager.setState(GameStateManager.LEVEL1STATE);
 			Sound.stopAllMusic();
-			Sound.setVolume(Sound.music2, Sound.DECREASE_15DB);
-			Sound.music2.play(true);
+			Sound.setVolume(Sound.music3, Sound.DECREASE_10DB);
+			Sound.music3.play(true);
 			
 			break;
 		case OPTIONS:

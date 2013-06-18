@@ -46,7 +46,7 @@ public class PeeBall extends MapObject {
 		
 		
 		try {
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/peeball.png"));
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/peeball2.png"));
 			
 			sprites = new BufferedImage[10];
 			for (int i = 0; i < sprites.length; i++) {

@@ -155,7 +155,7 @@ public class TileMap {
 			int c = rc % numTilesAcross;
 			return tiles[r][c].getType();
 		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println(numRows + ":" + numCols + " - " + row + ":" + col);
+			System.out.println("Actual [row : columns]: " + numRows + ":" + numCols + " -  Referred: " + row + ":" + col);
 						e.printStackTrace();
 		}
 		return 0;
