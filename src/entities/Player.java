@@ -48,6 +48,7 @@ public class Player extends MapObject {
 	private int nextLevel;
 
 	private ArrayList<Pee> peeList;
+	private ArrayList<Blood> bloodList;
 	private ArrayList<PeeBall> peeballs;
 	private PeeBallTrajectory pbTrajectory;
 	private ArrayList<Enemy> enemies;
@@ -107,13 +108,14 @@ public class Player extends MapObject {
 
 		facingRight = true;
 
-		health = maxHealth = 5;
+		health = maxHealth = 3;
 		pee = maxPee = 25000;
 
 		peeCost = 30;
 		peeDamage = 5;
 		peeBallDamage = 18;
 		peeList = new ArrayList<Pee>();
+		bloodList = new ArrayList<Blood>();
 		peeballs = new ArrayList<PeeBall>();
 		pbTrajectory = new PeeBallTrajectory(tilemap, facingRight, this);
 		scratchDamage = 8;
@@ -230,13 +232,17 @@ public class Player extends MapObject {
 				}
 			}
 
-			if (dy > 0)
+			if (dy > 0) {
 				jumping = false;
-			if (dy < 0 && !jumping)
-				dy += stopJumpSpeed;
+			}
 
-			if (dy > maxFallSpeed)
+			if (dy < 0 && !jumping) {
+				dy += stopJumpSpeed;
+			}
+
+			if (dy > maxFallSpeed) {
 				dy = maxFallSpeed;
+			}
 
 		}
 
@@ -244,13 +250,14 @@ public class Player extends MapObject {
 
 	public void update() {
 		// uppdater positioner
-		getNextPosition();
-		updatePosition();
-		checkTileMapCollision();
-		setPosition(xTemp, yTemp);
+		if (!dead) {
+			getNextPosition();
+			updatePosition();
+			checkTileMapCollision();
+			setPosition(xTemp, yTemp);
 
-		checkAttack();
-
+			checkAttack();
+		}
 		for (int i = 0; i < peeballs.size(); i++) {
 			peeballs.get(i).update();
 			if (peeballs.get(i).shouldRemove()) {
@@ -271,7 +278,7 @@ public class Player extends MapObject {
 
 		if (peeing) {
 			if (pee > peeCost) {
-				Pee p = new Pee(tilemap, facingRight, this, facingRight);
+				Pee p = new Pee(tilemap, facingRight, this, facingRight, null);
 				p.setPosition(x, y + 6);
 				peeList.add(p);
 				pee -= peeCost;
@@ -304,6 +311,14 @@ public class Player extends MapObject {
 			peeList.get(i).update();
 			if (peeList.get(i).shouldRemove()) {
 				peeList.remove(i);
+				i--;
+			}
+		}
+
+		for (int i = 0; i < bloodList.size(); i++) {
+			bloodList.get(i).update();
+			if (bloodList.get(i).shouldRemove()) {
+				bloodList.remove(i);
 				i--;
 			}
 		}
@@ -397,11 +412,16 @@ public class Player extends MapObject {
 		// return;
 		// }
 		// }
-
-		super.draw(g);
+		if (!dead) {
+			super.draw(g);
+		}
 
 		for (Pee p : peeList) {
 			p.draw(g);
+		}
+
+		for (Blood b : bloodList) {
+			b.draw(g);
 		}
 
 		for (PeeBall p : peeballs) {
@@ -422,13 +442,13 @@ public class Player extends MapObject {
 						if (peeList.get(i).isFromPeeBall()) {
 							e.hit(peeBallDamage
 									+ ((new Random().nextInt(2)) * (new Random()
-											.nextInt(2) + 1))
+									.nextInt(2) + 1))
 									+ new Random().nextInt(2), peeList.get(i)
 									.getFromDirectionRight());
 						} else {
 							e.hit(peeDamage
 									+ ((new Random().nextInt(2)) * (new Random()
-											.nextInt(2) + 1))
+									.nextInt(2) + 1))
 									+ new Random().nextInt(2), peeList.get(i)
 									.getFromDirectionRight());
 						}
@@ -441,7 +461,7 @@ public class Player extends MapObject {
 					if (peeballs.get(i).intersects(e)) {
 						e.hit(peeballs.get(i).getDirectHitDamage()
 								+ ((new Random().nextInt(2)) * (new Random()
-										.nextInt(2) + 1))
+								.nextInt(2) + 1))
 								+ new Random().nextInt(2), false);
 						this.addText("Direct hit!", e.getX(), e.getY(), 400,
 								new Color(255, 0, 125), 0.28);
@@ -452,7 +472,6 @@ public class Player extends MapObject {
 				}
 
 				if (intersects(e)) {
-					bIntersects = true;
 					if (e.contains(x, (y + (cHeight / 2)))
 							|| e.contains(x - 1, (y + (cHeight / 2)))
 							|| e.contains(x - 2, (y + (cHeight / 2)))
@@ -466,18 +485,15 @@ public class Player extends MapObject {
 							|| e.contains(x + 4, (y + (cHeight / 2)))
 							|| e.contains(x + 5, (y + (cHeight / 2)))
 							|| e.contains(x + 6, (y + (cHeight / 2)))) {
-						System.out.println("stomp");
 						if (falling && !jumping && !e.falling) {
 							e.hit(5000, false);
 						}
 					} else {
 						if (!e.isDying()) {
 							hit(e.getDamage());
-							bIntersects = false;
 						}
 					}
 				} else {
-					bIntersects = false;
 				}
 			}
 
@@ -485,23 +501,35 @@ public class Player extends MapObject {
 	}
 
 	public void hit(int damage) {
+		if (dead) return;
 		if (flinching)
 			return;
 		addText("" + damage, x, y - 10, 600, new Color(255, 0, 0));
 		health -= damage;
-		if (health < 0)
+		if (health < 0) {
 			health = 0;
-		if (health == 0)
+		}
+		if (health == 0) {
 			dead = true;
+			peeXplosion(x, y, facingRight, new Color(0xff0000));
+		}
 		flinching = true;
 		flinchTimer = System.nanoTime();
 	}
 
 	public void peeXplosion(double x, double y, boolean b) {
 		for (int i = 0; i < 40; i++) {
-			Pee p = new Pee(tilemap, b, null, facingRight);
+			Pee p = new Pee(tilemap, b, null, facingRight, null);
 			p.setPosition(x, y);
 			peeList.add(p);
+		}
+	}
+
+	public void peeXplosion(double x, double y, boolean b, Color color) {
+		for (int i = 0; i < 1000; i++) {
+			Blood bl = new Blood(tilemap, b, facingRight, color);
+			bl.setPosition(x, y);
+			bloodList.add(bl);
 		}
 	}
 

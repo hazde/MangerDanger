@@ -25,8 +25,8 @@ public class MenuState extends GameState {
 
 	private GamePanel panel;
 
-	private String[] options = { "Nytt spel", "Alternativ", "Hjälp", "Avsluta" };
-	private String[] description = { "Enter the Dainger Zone", "\"Upplösning\": ", "Hjääääääälp!", "Avsluta möget" };
+	private String[] options = { "New game", "Options", "Help", "Exit" };
+	private String[] description = { "Enter the Dainger Zone", "\"Resolution\": ", "Heeeeeelp!", "Just quit it..." };
 
 	private BufferedImage mange;
 	private int currentChoice = 0;
@@ -142,13 +142,13 @@ public class MenuState extends GameState {
 		fm = g.getFontMetrics();
 		if (currentChoice == OPTIONS) {
 			g.setColor(Color.BLACK);
-			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": "");
+			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": "");
 			Rectangle2D r = fm.getStringBounds(str, g);
 			int x = (int) (r.getWidth() / str.length() + 7);
 			int y = (panel.getWindowHeight()) - (int) r.getHeight();
-			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x + 1 , y);
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": ""), x + 1 , y);
 			g.setColor(Color.WHITE);
-			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x, y);
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": ""), x, y);
 		} else {
 			g.setColor(Color.BLACK);
 			Rectangle2D r = fm.getStringBounds(description[currentChoice], g);

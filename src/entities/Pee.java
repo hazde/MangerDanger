@@ -15,8 +15,9 @@ public class Pee extends MapObject {
 	private double peeRise;
 	private boolean fromPeeBall;
 	private boolean fromDirectionRight;
+	private Color color;
 
-	public Pee(TileMap tm, boolean right, Player player, boolean b) {
+	public Pee(TileMap tm, boolean right, Player player, boolean b, Color color) {
 		super(tm);
 		if (player != null) {
 			if (!player.isJumping() && !player.isFalling()) {
@@ -38,6 +39,12 @@ public class Pee extends MapObject {
 			fromPeeBall = true;
 			cWidth = 2; // + (new Random().nextInt(2) + 1);
 			cHeight = 2; // + (new Random().nextInt(2) + 1);
+		}
+		
+		if (color == null) {
+			this.color = new Color(0xFFEC1E);
+		} else {
+			this.color = color;
 		}
 		
 		fromDirectionRight = b;
@@ -104,16 +111,8 @@ public class Pee extends MapObject {
 		
 		g.setColor(new Color(0x090909));
 		g.fillRect((int) (x + xMap), (int) (y + yMap), cWidth, cHeight);
-		g.setColor(new Color(0xFFEC1E));
+		g.setColor(color);
 		g.fillRect((int) (x + xMap), (int) (y + yMap), cWidth, cHeight);
-
-		//		Rectangle temp = this.getRectangle();
-		//		g.setColor(Color.BLACK);
-		//		g.drawRect((int) (x + xMap - width / 2) , (int) (y + yMap - height / 2), (int) temp.getWidth(), (int) temp.getHeight());
-
-		//		g.setColor(new Color(255, 245, 117));
-		//		g.fillRect((int) (x + xMap - width / 2 + width) - 1, (int) (y + yMap - height / 2), cWidth, cHeight);
-
 
 	}
 

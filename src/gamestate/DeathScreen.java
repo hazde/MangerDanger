@@ -26,8 +26,8 @@ public class DeathScreen extends GameState {
 
 	private GamePanel panel;
 
-	private String[] options = { "Försök igen", "Alternativ", "Avsluta" };
-	private String[] description = { "Enter the Dainger Zone... again.", "\"Upplösning\": ", "Avsluta möget" };
+	private String[] options = { "Try again", "Options", "Exit" };
+	private String[] description = { "Enter the Dainger Zone... again.", "\"Resolution\": ", "Enough!" };
 
 	private BufferedImage mange;
 	private BufferedImage death;
@@ -153,13 +153,13 @@ public class DeathScreen extends GameState {
 		fm = g.getFontMetrics();
 		if (currentChoice == OPTIONS) {
 			g.setColor(Color.BLACK);
-			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": "");
+			String str = description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": "");
 			Rectangle2D r = fm.getStringBounds(str, g);
 			int x = (int) (r.getWidth() / str.length() + 7);
 			int y = (panel.getWindowHeight()) - (int) r.getHeight();
-			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x + 1 , y);
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": ""), x + 1 , y);
 			g.setColor(Color.WHITE);
-			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullskärm": ""), x, y);
+			g.drawString(description[currentChoice] + (panel.getWindowWidth() * panel.getScale()) + "x" + (panel.getWindowHeight() * panel.getScale()) + (panel.getFullscreen() ? " - Fullscreen": ""), x, y);
 		} else {
 			g.setColor(Color.BLACK);
 			Rectangle2D r = fm.getStringBounds(description[currentChoice], g);

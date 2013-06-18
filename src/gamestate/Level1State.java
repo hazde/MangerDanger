@@ -104,6 +104,7 @@ public class Level1State extends Level {
 
 		if(player.isDead()) {
 			eventDead = true;
+			enemies.clear();
 		}
 
 		bg.update();
@@ -119,6 +120,7 @@ public class Level1State extends Level {
 
 
 		//	bg.setPosition(tilemap.getX(), tilemap.getY());
+
 		for (int i = 0; i < getEnemies().size(); i++) {
 			getEnemies().get(i).update();
 		}
@@ -132,8 +134,6 @@ public class Level1State extends Level {
 		
 		bg.draw(g);
 		tilemap.draw(g);
-		
-
 
 
 		for (int i = 0; i < getEnemies().size(); i++) {
@@ -190,8 +190,8 @@ public class Level1State extends Level {
 		
 		g.setColor(java.awt.Color.BLACK);
 		for(int i = 0; i < tb.size(); i++) {
-			if (eventDead) {
-				screenFade += 0.02;
+			if (eventDead && eventCount > 250) {
+				screenFade += 0.01;
 				if (screenFade >= 1) {
 					screenFade = 1;
 				}
@@ -199,7 +199,7 @@ public class Level1State extends Level {
 				g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
 				g.drawImage(death, (int) tb.get(i).getX() + 30, 30, death.getWidth(), death.getHeight(), null);
 			} else {
-				g.fill(tb.get(i));
+//				g.fill(tb.get(i));
 			}
 		}
 
@@ -285,50 +285,6 @@ public class Level1State extends Level {
 		
 		
 	}
-	
-
-	public void keyPressed(int k) {
-//		if (k == KeyEvent.VK_LEFT) player.setLeft(true);
-//		if (k == KeyEvent.VK_RIGHT) player.setRight(true);
-//
-//
-//		if (player.isPeeing() && !player.isJumping() && !player.isFalling() && !player.isMoving()) {
-//			if (k == KeyEvent.VK_UP) player.changePeeArcY(-0.1);
-//			if (k == KeyEvent.VK_DOWN) player.changePeeArcY(0.1);
-//		} else {
-//			if (player.isJumping() || player.isFalling()) {
-//				if (k == KeyEvent.VK_UP) player.setGliding(true);
-//			} else {
-//				if (k == KeyEvent.VK_UP) player.setJumping(true);
-//			}
-//		}
-//
-//		//		if (k == KeyEvent.VK_DOWN) player.setDown(true);
-//		if (k == KeyEvent.VK_CONTROL) player.setJumping(true);
-//		if (k == KeyEvent.VK_SPACE) player.setFiring(true);
-
-	}
-
-	public void keyReleased(int k) {
-//		if (k == KeyEvent.VK_LEFT) player.setLeft(false);
-//		if (k == KeyEvent.VK_RIGHT) player.setRight(false);
-//
-//		if (player.isPeeing() && !player.isJumping() && !player.isFalling() && !player.isMoving()) {
-//
-//		} else {
-//			if (player.isJumping() || player.isFalling()) {
-//				if (k == KeyEvent.VK_UP) player.setGliding(false);
-//			} else {
-//				if (k == KeyEvent.VK_UP) player.setJumping(false);
-//			}
-//		}
-//
-//
-//		if (k == KeyEvent.VK_CONTROL) player.setJumping(false);
-//		if (k == KeyEvent.VK_SPACE) player.setFiring(false);
-//		if (k == KeyEvent.VK_D) player.setThrowingPeeball(false);
-
-	}
 
 	private void eventStart() {
 		eventCount++;
@@ -345,7 +301,6 @@ public class Level1State extends Level {
 			tb.get(2).y += 4;
 			tb.get(3).x += 6;
 		}
-		//		if(eventCount == 30) title.begin();
 		if(eventCount == 60) {
 			eventStart = false;
 			eventCount = 0;
@@ -362,13 +317,13 @@ public class Level1State extends Level {
 			//			player.setDead();
 			//			player.stop();
 		}
-		if(eventCount == 40) {
+		if(eventCount == 2) {
 			Sound.setPosition(Sound.deathscreen3, 5110000);
 			tb.clear();
 			tb.add(new Rectangle(
 					GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
 		}
-		else if(eventCount > 40) {
+		else if(eventCount > 250) {
 				if (tb.get(0).x > 0) {
 					tb.get(0).x -= (GamePanel.WIDTH / 100) / 2;
 				} else {
