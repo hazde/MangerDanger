@@ -8,9 +8,6 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import main.GamePanel;
-import main.Sound;
-
 import tilemap.TileMap;
 
 @SuppressWarnings("unused")
@@ -151,6 +148,7 @@ public class Player extends MapObject {
 
 	public void init(ArrayList<Enemy> enemies) {
 		this.enemies = enemies;
+		
 	}
 
 	private void getNextPosition() {
@@ -191,11 +189,6 @@ public class Player extends MapObject {
 			}
 		}
 
-		// cannot attack while moving
-		if ((currentAction == SCRATCHING || currentAction == FIREBALL)
-				&& !(jumping || falling)) {
-			dx = 0;
-		}
 
 		if (!jumping && !falling) {
 			lastWalkableX = x;
@@ -487,6 +480,10 @@ public class Player extends MapObject {
 							|| e.contains(x + 6, (y + (cHeight / 2)))) {
 						if (falling && !gliding && !jumping && !e.falling) {
 							e.hit(5000, false);
+							bloodXplosion(e.getX(), e.getY(), facingRight, new Color(0xff0000), 250);
+							falling = false;
+//							jumping = true;
+							dy = -(maxFallSpeed / 2) + (jumpStart / 3);
 						}
 					} else {
 						if (!e.isDying()) {
@@ -511,7 +508,7 @@ public class Player extends MapObject {
 		}
 		if (health == 0) {
 			dead = true;
-			peeXplosion(x, y, facingRight, new Color(0xff0000));
+			bloodXplosion(x, y, facingRight, new Color(0xff0000), 1000);
 		}
 		flinching = true;
 		flinchTimer = System.nanoTime();
@@ -525,8 +522,8 @@ public class Player extends MapObject {
 		}
 	}
 
-	public void peeXplosion(double x, double y, boolean b, Color color) {
-		for (int i = 0; i < 1000; i++) {
+	public void bloodXplosion(double x, double y, boolean b, Color color, int amount) {
+		for (int i = 0; i < amount; i++) {
 			Blood bl = new Blood(tilemap, b, facingRight, color);
 			bl.setPosition(x, y);
 			bloodList.add(bl);

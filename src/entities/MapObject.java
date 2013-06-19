@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 import main.GamePanel;
@@ -133,15 +134,15 @@ public abstract class MapObject {
 
 	public void calculateCorners(double x, double y) {
 
-		int leftTile = (int)(x - cWidth / 2) / tileSize;
-		int rightTile = (int)(x + cWidth / 2 - 1) / tileSize;
-		int topTile = (int)(y - cHeight / 2) / tileSize;
-		int bottomTile = (int)(y + cHeight / 2 - 1) / tileSize;
-
-		//		int leftTile = (int) (x) / tileSize;
-		//		int rightTile = (int) (x + 3) / tileSize;
-		//		int topTile = (int) (y - cHeight / 2) / tileSize;
-		//		int bottomTile = (int) (y + cWidth / 2 - 1) / tileSize;
+//		int leftTile = (int)(x - cWidth / 2) / tileSize;
+//		int rightTile = (int)(x + cWidth / 2 - 1) / tileSize;
+//		int topTile = (int)(y - cHeight / 2) / tileSize;
+//		int bottomTile = (int)(y + cHeight / 2 - 1) / tileSize;
+		
+		int leftTile = (int) (x - cWidth / 2) / tileSize;
+		int rightTile = (int) (x + cWidth / 2 - 1) / tileSize;
+		int topTile = (int) (y - cHeight / 2) / tileSize;
+		int bottomTile = (int) (y + cHeight / 2 - 1) / tileSize;
 
 		if (y < 0) {											// Entity är ovanför banans upper bound
 			topTile = bottomTile = 0;
@@ -149,26 +150,28 @@ public abstract class MapObject {
 			bottomTile = (tilemap.getHeight() / tileSize) - 1;
 			topTile = bottomTile;		
 		}
-
-		int tl = tilemap.getType(topTile, leftTile);
-		int tr = tilemap.getType(topTile, rightTile);
-		int bl = tilemap.getType(bottomTile, leftTile);
-		int br = tilemap.getType(bottomTile, rightTile);
+		
+		if (x < 0) {
+			leftTile = rightTile = 0;
+		} else if (x + cWidth / 2 > tilemap.getWidth()) {
+			rightTile = (tilemap.getWidth() / tileSize) - 1;
+			leftTile = rightTile;
+		}
 
 		//		System.out.println("XY: " + (leftTile * tileSize) + ", " + (bottomTile * tileSize) +  " - " + (leftTile + rightTile) / 2 + " cHeight: " + cHeight + ", cWidth: " + cWidth);
 		standingOnTile = tilemap.getType(bottomTile, ((int) x) / tileSize);
 		//		standingTileRect.x = leftTile + rightTile;
 		//		standingTileRect.y = (bottomTile);
 
-		//		topLeft = !tilemap.isWalkable(topTile, leftTile);
-		//		topRight = !tilemap.isWalkable(topTile, rightTile);
-		//		bottomLeft = !tilemap.isWalkable(bottomTile, leftTile);
-		//		bottomRight = !tilemap.isWalkable(bottomTile, leftTile);
+		topLeft = !tilemap.isWalkable(topTile, leftTile);
+		topRight = !tilemap.isWalkable(topTile, rightTile);
+		bottomLeft = !tilemap.isWalkable(bottomTile, leftTile);
+		bottomRight = !tilemap.isWalkable(bottomTile, rightTile);
 
-		topLeft = (tl == Tile.BLOCKED || tl == Tile.EVENT);
-		topRight = (tr == Tile.BLOCKED || tr == Tile.EVENT);
-		bottomLeft = (bl == Tile.BLOCKED || bl == Tile.EVENT);
-		bottomRight = (br == Tile.BLOCKED || br == Tile.EVENT);
+//		topLeft = (tl == Tile.BLOCKED || tl == Tile.EVENT);
+//		topRight = (tr == Tile.BLOCKED || tr == Tile.EVENT);
+//		bottomLeft = (bl == Tile.BLOCKED || bl == Tile.EVENT);
+//		bottomRight = (br == Tile.BLOCKED || br == Tile.EVENT);
 
 	}
 
@@ -181,8 +184,6 @@ public abstract class MapObject {
 
 		xTemp = x;
 		yTemp = y;
-
-
 
 		for (int i = 0; i < floatText.size(); i++) {
 			floatText.get(i).update();
@@ -299,18 +300,20 @@ public abstract class MapObject {
 				if (elapsed / 50 % 2 == 0) {
 				} else {
 					if (facingRight) {
-						g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 4, null);
+						g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 5, null);
 					} else {
-						g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 4, -width, height, null);
+						g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 5, -width, height, null);
 					}
 				}
 			} else {
 				if (facingRight) {
-					g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 4, null);
+					g.drawImage(animation.getImage(), (int) (x + xMap - width / 2), (int) (y + yMap - height / 2) - 5, null);
 				} else {
-					g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 4, -width, height, null);
+					g.drawImage(animation.getImage(), (int) (x + xMap - width / 2 + width), (int) (y + yMap - height / 2) - 5, -width, height, null);
 				}
 			}
+			
+			
 			
 			
 			// rita ut en pixel som visar positionen för objektets fötter

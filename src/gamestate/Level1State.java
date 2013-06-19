@@ -57,7 +57,7 @@ public class Level1State extends Level {
 	public void init() {
 		tilemap = new TileMap(30, panel);
 		tilemap.loadTiles("/Tilesets/grasstileset3.png");
-		tilemap.loadMap("/Maps/level1-5.map");
+		tilemap.loadMap("/Maps/level1-6.map");
 		tilemap.setPosition(0, 0);
 
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1, panel);
@@ -112,7 +112,7 @@ public class Level1State extends Level {
 		player.update();
 		
 		if (tilemap.getHeight() > GamePanel.HEIGHT) {
-		tilemap.setPosition(GamePanel.WIDTH / 2  - player.getX(), GamePanel.HEIGHT / 3 - player.getY() - 22);
+			tilemap.setPosition(GamePanel.WIDTH / 2  - player.getX(), GamePanel.HEIGHT / 3 - player.getY() - 22);
 		} else {
 			tilemap.setPosition(GamePanel.WIDTH / 2  - player.getX(), GamePanel.HEIGHT / 2 - player.getY() - 22);
 		}
@@ -132,10 +132,18 @@ public class Level1State extends Level {
 
 		// draw tilemap
 		
+		if (eventDead && eventCount > 250) {
+			
+		} else {
 		bg.draw(g);
-		tilemap.draw(g);
-
-
+		tilemap.draw(g, 1);
+		
+		
+		}
+		
+		
+		player.draw(g);
+		
 		for (int i = 0; i < getEnemies().size(); i++) {
 			getEnemies().get(i).draw(g);
 			if (getEnemies().get(i).isDead() || getEnemies().get(i).getDiedFromFalling()) {
@@ -154,9 +162,16 @@ public class Level1State extends Level {
 
 		}
 
-		player.draw(g);
+		
+		
+		if (eventDead && eventCount > 250) {
+			
+		} else {
+		tilemap.draw(g, 2);
+		}
+		
 		hud.draw(g);
-
+		
 		if (drawDebug) {
 		g.setColor(Color.BLACK);
 		g.fillRect(00, GamePanel.HEIGHT - 50, 220, GamePanel.HEIGHT);

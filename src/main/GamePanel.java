@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -168,9 +169,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	}
 	
 	private void drawToScreen() {
-		Graphics g2 = getGraphics();
+		Graphics g2 = window.getGraphics();
 		g2.drawImage(image, 0, 0, getWindowWidth() * scale, getWindowHeight() * scale, null);
-		g2.dispose();
+		g2.dispose();	
 	}
 	
 	public void setScale(int scale) {

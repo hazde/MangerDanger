@@ -12,11 +12,15 @@ public class Tile {
 	private int type;
 	private boolean walkable;
 	
-	public Tile(BufferedImage image, int type, boolean walkable) {
+	public Tile(BufferedImage image) {
 		this.image = image;
-		this.type = type;
-		this.walkable = walkable;
 	}
+	
+//	public Tile(BufferedImage image, int type, boolean walkable) {
+//		this.image = image;
+//		this.type = type;
+//		this.walkable = walkable;
+//	}
 	
 	public BufferedImage getImage() {
 		return image;
@@ -24,6 +28,10 @@ public class Tile {
 	
 	public int getType() {
 		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 	public boolean isWalkable() {

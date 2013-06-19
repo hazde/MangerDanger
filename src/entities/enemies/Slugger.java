@@ -30,7 +30,7 @@ public class Slugger extends Enemy {
 		cWidth = 18;
 		cHeight = 20;
 		
-		health = maxHealth = 50;
+		health = maxHealth = 4;
 		damage = 1;
 		setDiedFromFalling(false);
 		

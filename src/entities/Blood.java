@@ -14,14 +14,18 @@ public class Blood extends MapObject {
 	private double bloodRise;
 	private boolean collides;
 	private Color color;
+	private int life;
+	private int lifeCounter;
 
 	public Blood(TileMap tm, boolean right, boolean b, Color color) {
 		super(tm);
 		moveSpeed = (1.8 * (new Random().nextDouble() * 3.3)) * (new Random().nextInt(2) == 1 ? -1: 1) ;
-		bloodFallSpeed = 0.05;
+		bloodFallSpeed = 0.08;
 		bloodRise = -29.13 * (new Random().nextDouble() * 0.2);
-		cWidth = 1 + (new Random().nextInt(2) + 1);
-		cHeight = 1 + (new Random().nextInt(2) + 1);
+		int dc = (new Random().nextInt(2));
+		cWidth = 1 + dc;
+		cHeight = 1 + dc;
+		life = 470 + (new Random().nextInt(150) * (new Random().nextInt(2) == 1 ? -1: 1));
 
 		if (new Random().nextInt(4) == 1) {
 			collides = true;
@@ -56,7 +60,8 @@ public class Blood extends MapObject {
 	}
 
 	public void update() {
-
+		if (lifeCounter >= life) remove = true;
+		lifeCounter++;
 		dy += bloodFallSpeed;
 
 		updatePosition();
@@ -65,7 +70,10 @@ public class Blood extends MapObject {
 		} else {
 			checkTileMapCollision();
 
-
+//			if (dx == 0 || dy == 0) {
+//				dx = 0;
+//				dy = 0;
+//			}
 
 			if (dy == 0 && dx == 0 && !hit) {
 				setHit();
@@ -78,6 +86,8 @@ public class Blood extends MapObject {
 			if (hit) remove = true;
 			if (y > tilemap.getHeight()) remove = true;
 		}
+		
+		
 		
 		setPosition(xTemp, yTemp);
 
